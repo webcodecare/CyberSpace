@@ -13,9 +13,9 @@ export const dynamic = "force-dynamic";
 interface NewsItem {
   id: number;
   slug: string;
-  coverImage: string | null;
+  imageUrl: string | null;
   publishedAt: string | null;
-  translations: { lang: string; title: string; excerpt: string | null; category: string | null }[];
+  translations: { lang: string; title: string; excerpt: string | null }[];
 }
 
 async function fetchPublishedNews(): Promise<NewsItem[]> {
@@ -64,9 +64,9 @@ export default async function NewsListPage({ params }: { params: Promise<{ lang:
                 <FadeUp key={n.id} delay={(i % 3) * 0.07}>
                   <Link href={`/${lang}/news/${n.slug}`} className="news-full-card">
                     <div className="news-full-card__img-wrap">
-                      {n.coverImage ? (
+                      {n.imageUrl ? (
                         <Image
-                          src={n.coverImage}
+                          src={n.imageUrl}
                           alt={trans?.title ?? n.slug}
                           width={400}
                           height={220}
@@ -80,7 +80,6 @@ export default async function NewsListPage({ params }: { params: Promise<{ lang:
                     </div>
                     <div className="news-full-card__body">
                       <div className="news-full-card__top">
-                        {trans?.category && <span className="news-category-tag">{trans.category}</span>}
                         {n.publishedAt && (
                           <time dateTime={n.publishedAt} className="news-full-card__date">
                             {formatDay(n.publishedAt, lang)}

@@ -31,7 +31,9 @@ export default function ProductCard({ product, view = "grid" }: { product: Publi
   return (
     <article className={`pcard${view === "list" ? " pcard--list" : ""}`}>
       <Link href={href} className="pcard__media" tabIndex={-1} aria-hidden="true">
-        <ProductImage category={product.category as CategoryId} label={displayName} />
+        {product.imageUrl
+          ? <img src={product.imageUrl} alt={displayName} className="pimg" />
+          : <ProductImage category={product.category as CategoryId} label={displayName} />}
         <span className="pcard__brand">{product.brand}</span>
       </Link>
       <div className="pcard__body">

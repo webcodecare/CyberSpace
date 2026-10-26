@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { CATEGORIES, type CategoryId } from "@/data/catalog";
+import type { CategoryId } from "@/data/catalog";
 import { useLang } from "@/lib/useLang";
 import { useAppDispatch } from "@/redux/store";
 import { openInquiry } from "@/redux/inquirySlice";
 import { useGetProductsQuery } from "@/redux/fetchers/product/productApi";
 import { useGetSettingsQuery } from "@/redux/fetchers/settings/settingsApi";
+import { useGetCategoriesQuery } from "@/redux/fetchers/category/categoryApi";
 import ProductCard, { PriceText, StockBadge } from "./ProductCard";
 import ProductImage from "./ProductImage";
 import { FadeLeft, FadeRight, FadeUp } from "./Motion";
@@ -20,6 +21,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
 
   const { data: allProducts = [], isLoading } = useGetProductsQuery();
   const { data: settings = { showPrices: true, showStock: true } } = useGetSettingsQuery();
+  const { data: dbCats = [] } = useGetCategoriesQuery();
 
   const [tab, setTab] = useState<Tab>("description");
 
@@ -44,8 +46,8 @@ export default function ProductDetail({ slug }: { slug: string }) {
     );
   }
 
-  const cat = CATEGORIES.find((c) => c.id === product.category);
-  const catName = cat?.name[lang] ?? product.category;
+  const cat = dbCats.find((c) => c.slug === product.category);
+  const catName = cat ? ({ en: cat.nameEN, az: cat.nameAZ, ru: cat.nameRU }[lang] ?? cat.nameEN) : product.category;
   const related = allProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
   const tabs: Tab[] = ["description", "specifications", "related"];
 
@@ -62,7 +64,9 @@ export default function ProductDetail({ slug }: { slug: string }) {
 
       <div className="detail">
         <FadeRight className="detail__media">
-          <ProductImage category={product.category as CategoryId} label={displayName} />
+          {product.imageUrl
+            ? <img src={product.imageUrl} alt={displayName} className="pimg" />
+            : <ProductImage category={product.category as CategoryId} label={displayName} />}
         </FadeRight>
         <FadeLeft delay={0.06} className="detail__info">
           <span className="pill">{product.brand}</span>

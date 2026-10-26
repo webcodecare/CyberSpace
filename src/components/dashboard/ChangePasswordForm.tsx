@@ -2,15 +2,17 @@
 
 import { useState, type FormEvent } from "react";
 import type { Dict } from "@/lib/i18n";
+import { useChangePasswordMutation } from "@/redux/fetchers/auth/authApi";
 
 export default function ChangePasswordForm({ t }: { t: Dict }) {
   const [oldPw, setOldPw] = useState("");
   const [newPw, setNewPw] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
   const [showPw, setShowPw] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const [changePassword, { isLoading: loading }] = useChangePasswordMutation();
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -19,19 +21,13 @@ export default function ChangePasswordForm({ t }: { t: Dict }) {
     if (!oldPw || !newPw || !confirmPw) { setError(t.dash.errPwRequired); return; }
     if (newPw.length < 6) { setError(t.dash.errPwLen); return; }
     if (newPw !== confirmPw) { setError(t.dash.errPwMatch); return; }
-    setLoading(true);
     try {
-      const res = await fetch("/api/user/change-password", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ old_password: oldPw, new_password: newPw }),
-      });
-      const data = await res.json();
-      if (!res.ok) { setError(data.error || t.dash.errPwWrong); return; }
+      await changePassword({ old_password: oldPw, new_password: newPw }).unwrap();
       setSuccess(true);
       setOldPw(""); setNewPw(""); setConfirmPw("");
-    } finally {
-      setLoading(false);
+    } catch (err: unknown) {
+      const msg = (err as { data?: { error?: string } })?.data?.error;
+      setError(msg ?? t.dash.errPwWrong);
     }
   }
 

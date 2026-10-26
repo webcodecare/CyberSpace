@@ -5,7 +5,6 @@ export interface NewsTranslation {
   id: number;
   lang: "AZ" | "EN" | "RU";
   title: string;
-  category: string;
   excerpt: string;
   body: string;
 }
@@ -33,7 +32,6 @@ export interface CreateNewsInput {
   translations: {
     lang: "AZ" | "EN" | "RU";
     title: string;
-    category: string;
     excerpt: string;
     body: string;
   }[];

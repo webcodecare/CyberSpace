@@ -7,7 +7,7 @@ export function isLocale(v: string): v is Locale {
 }
 
 export type Dict = {
-  nav: Record<"home" | "about" | "products" | "solutions" | "services" | "partners" | "news" | "careers" | "contact" | "shop" | "admin" | "login", string>;
+  nav: Record<"home" | "about" | "products" | "solutions" | "services" | "partners" | "news" | "careers" | "contact" | "shop" | "admin" | "login" | "dashboard", string>;
   common: Record<string, string>;
   home: Record<string, string>;
   shop: Record<string, string>;
@@ -22,7 +22,7 @@ export type Dict = {
 const en: Dict = {
   nav: {
     home: "Home", about: "About Us", products: "Products", solutions: "Solutions", services: "Services",
-    partners: "Partners", news: "News", careers: "Careers", contact: "Contact", shop: "Shop", admin: "Admin", login: "Login",
+    partners: "Partners", news: "News", careers: "Careers", contact: "Contact", shop: "Shop", admin: "Admin", login: "Login", dashboard: "Dashboard",
   },
   common: {
     viewAll: "View all", readMore: "Read more", search: "Search", contactMe: "Contact Me", inStock: "In Stock",
@@ -167,10 +167,8 @@ const en: Dict = {
     noInquiries: "No inquiries yet.",
     syncStatus: "Sync Status",
     lastSynced: "Last synced",
-    banners: "Banners",
     partners: "Partners",
     news: "News",
-    homeContent: "Home Content",
     add: "Add",
     edit: "Edit",
     delete: "Delete",
@@ -185,7 +183,7 @@ const en: Dict = {
 const az: Dict = {
   nav: {
     home: "Ana səhifə", about: "Haqqımızda", products: "Məhsullar", solutions: "Həllər", services: "Xidmətlər",
-    partners: "Tərəfdaşlar", news: "Xəbərlər", careers: "Karyera", contact: "Əlaqə", shop: "Mağaza", admin: "Admin", login: "Daxil ol",
+    partners: "Tərəfdaşlar", news: "Xəbərlər", careers: "Karyera", contact: "Əlaqə", shop: "Mağaza", admin: "Admin", login: "Daxil ol", dashboard: "Panel",
   },
   common: {
     viewAll: "Hamısına bax", readMore: "Daha çox", search: "Axtar", contactMe: "Mənimlə əlaqə saxlayın", inStock: "Stokda var",
@@ -330,10 +328,8 @@ const az: Dict = {
     noInquiries: "Hələ sorğu yoxdur.",
     syncStatus: "Sinxronizasiya statusu",
     lastSynced: "Son sinxronizasiya",
-    banners: "Bannerlər",
     partners: "Tərəfdaşlar",
     news: "Xəbərlər",
-    homeContent: "Ana Səhifə Məzmunu",
     add: "Əlavə et",
     edit: "Redaktə et",
     delete: "Sil",
@@ -348,7 +344,7 @@ const az: Dict = {
 const ru: Dict = {
   nav: {
     home: "Главная", about: "О нас", products: "Продукты", solutions: "Решения", services: "Услуги",
-    partners: "Партнёры", news: "Новости", careers: "Карьера", contact: "Контакты", shop: "Магазин", admin: "Админ", login: "Войти",
+    partners: "Партнёры", news: "Новости", careers: "Карьера", contact: "Контакты", shop: "Магазин", admin: "Админ", login: "Войти", dashboard: "Панель",
   },
   common: {
     viewAll: "Смотреть все", readMore: "Подробнее", search: "Поиск", contactMe: "Свяжитесь со мной", inStock: "В наличии",
@@ -493,10 +489,8 @@ const ru: Dict = {
     noInquiries: "Запросов пока нет.",
     syncStatus: "Статус синхронизации",
     lastSynced: "Последняя синхронизация",
-    banners: "Баннеры",
     partners: "Партнёры",
     news: "Новости",
-    homeContent: "Контент главной",
     add: "Добавить",
     edit: "Редактировать",
     delete: "Удалить",

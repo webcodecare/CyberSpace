@@ -1,12 +1,13 @@
 "use client";
 
 import * as React from "react";
+import { AlertTriangle, Info } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
+  DialogBody,
   DialogFooter,
 } from "./dialog";
 import { Button } from "./button";
@@ -38,13 +39,26 @@ export function ConfirmDialog({
     await onConfirm();
   }
 
+  const isDestructive = variant === "destructive";
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+    <Dialog open={open} onOpenChange={loading ? undefined : onOpenChange}>
+      <DialogContent size="sm">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, paddingTop: 4, paddingBottom: 2 }}>
+            <div className={`cdlg-icon${isDestructive ? " cdlg-icon--danger" : " cdlg-icon--info"}`}>
+              {isDestructive
+                ? <AlertTriangle size={22} strokeWidth={2} />
+                : <Info size={22} strokeWidth={2} />}
+            </div>
+            <DialogTitle style={{ textAlign: "center" }}>{title}</DialogTitle>
+          </div>
         </DialogHeader>
+        {description && (
+          <DialogBody style={{ padding: "12px 24px 16px", textAlign: "center" }}>
+            <p style={{ fontSize: 13.5, color: "#5b6b82", margin: 0, lineHeight: 1.55 }}>{description}</p>
+          </DialogBody>
+        )}
         <DialogFooter>
           <Button
             type="button"
@@ -56,11 +70,16 @@ export function ConfirmDialog({
           </Button>
           <Button
             type="button"
-            variant={variant === "destructive" ? "destructive" : "default"}
+            variant={isDestructive ? "destructive" : "default"}
             onClick={handleConfirm}
             disabled={loading}
           >
-            {loading ? "Deleting…" : confirmText}
+            {loading ? (
+              <span style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                <span className="btn-spinner" />
+                Deleting…
+              </span>
+            ) : confirmText}
           </Button>
         </DialogFooter>
       </DialogContent>

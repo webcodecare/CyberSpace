@@ -1,29 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Dict } from "@/lib/i18n";
+import { useGetSettingsQuery, useUpdateSettingsMutation } from "@/redux/fetchers/settings/settingsApi";
 
-export default function SettingsClient({
-  initialSettings,
-  t,
-}: {
-  initialSettings: { showPrices: boolean; showStock: boolean };
-  t: Dict;
-}) {
-  const [showPrices, setShowPrices] = useState(initialSettings.showPrices);
-  const [showStock, setShowStock] = useState(initialSettings.showStock);
+export default function SettingsClient({ t }: { t: Dict }) {
+  const { data: settings, isLoading } = useGetSettingsQuery();
+  const [updateSettings] = useUpdateSettingsMutation();
+
+  const [showPrices, setShowPrices] = useState(true);
+  const [showStock, setShowStock] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (settings) {
+      setShowPrices(settings.showPrices);
+      setShowStock(settings.showStock);
+    }
+  }, [settings]);
 
   async function updateSetting(key: string, value: boolean) {
     setSaving(true);
     setSaved(false);
     try {
-      await fetch("/api/admin/settings", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ key, value }),
-      });
+      await updateSettings({ key, value }).unwrap();
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
     } finally {
@@ -39,6 +40,16 @@ export default function SettingsClient({
   function handleStock(v: boolean) {
     setShowStock(v);
     updateSetting("showStock", v);
+  }
+
+  if (isLoading) {
+    return (
+      <div className="dash-settings">
+        <div className="settings-card">
+          <span className="skel skel--md" style={{ width: 160, height: 20 }} />
+        </div>
+      </div>
+    );
   }
 
   return (

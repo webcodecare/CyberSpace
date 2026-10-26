@@ -81,8 +81,8 @@ export default function ImageUpload({
   const hasImage = Boolean(value);
 
   return (
-    <div className="field">
-      {label && <label>{label}</label>}
+    <div className="pf-field">
+      {label && <span className="pf-label">{label}</span>}
 
       {hasImage ? (
         <div className="img-preview">
@@ -125,9 +125,7 @@ export default function ImageUpload({
           <div className="img-upload__inner">
             {uploading ? (
               <>
-                <svg className="img-upload__icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-                </svg>
+                <span className="img-upload__spinner" aria-hidden="true" />
                 <span className="img-upload__label">Uploading…</span>
               </>
             ) : (
@@ -162,11 +160,11 @@ export default function ImageUpload({
           <div className="img-dual__or">or paste URL</div>
           <input
             type="url"
+            className="pf-input"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="https://..."
             disabled={disabled || uploading}
-            style={{ fontSize: ".83rem" }}
           />
         </div>
       )}

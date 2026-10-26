@@ -10,7 +10,9 @@ import { BACKEND_URL } from "@/lib/server-auth";
 import { FadeDown, FadeLeft, FadeRight, FadeUp, ZoomIn } from "@/components/Motion";
 import heroSvg from "@/assets/animated-ai-hero.svg";
 
-const CATEGORY_ICONS: Record<CategoryId, React.ReactNode> = {
+type DbCategory = { id: number; slug: string; nameEN: string; nameAZ: string; nameRU: string; imageUrl: string | null; isActive: boolean; order: number };
+
+const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   servers: (
     <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="3" width="20" height="5" rx="1"/><rect x="2" y="10" width="20" height="5" rx="1"/><rect x="2" y="17" width="20" height="5" rx="1"/>
@@ -51,6 +53,11 @@ const CATEGORY_ICONS: Record<CategoryId, React.ReactNode> = {
   consumer: (
     <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       <rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1" fill="currentColor" stroke="none"/>
+    </svg>
+  ),
+  _default: (
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/>
     </svg>
   ),
 };
@@ -150,7 +157,7 @@ async function fetchActivePartners() {
     const res = await fetch(`${BACKEND_URL}/partners/active`, { cache: "no-store" });
     if (!res.ok) return [];
     const json = await res.json();
-    return (json.data ?? []) as { id: number; name: string; logoUrl: string | null; descEN: string | null; descAZ: string | null; descRU: string | null }[];
+    return (json.data ?? []) as { id: number; name: string; logoUrl: string | null; websiteUrl: string | null; descEN: string | null; descAZ: string | null; descRU: string | null }[];
   } catch {
     return [];
   }
@@ -161,7 +168,19 @@ async function fetchPublishedNews() {
     const res = await fetch(`${BACKEND_URL}/news/published`, { cache: "no-store" });
     if (!res.ok) return [];
     const json = await res.json();
-    return (json.data ?? []) as { id: number; slug: string; imageUrl: string | null; publishedAt: string | null; translations: { lang: string; title: string; excerpt: string | null; category: string | null }[] }[];
+    return (json.data ?? []) as { id: number; slug: string; imageUrl: string | null; publishedAt: string | null; translations: { lang: string; title: string; excerpt: string | null }[] }[];
+  } catch {
+    return [];
+  }
+}
+
+async function fetchActiveCategories(): Promise<DbCategory[]> {
+  try {
+    const res = await fetch(`${BACKEND_URL}/categories`, { cache: "no-store" });
+    if (!res.ok) return [];
+    const json = await res.json();
+    const all = (json.data ?? []) as DbCategory[];
+    return all.filter((c) => c.isActive);
   } catch {
     return [];
   }
@@ -176,7 +195,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   const stats = [["15+", h.statYears], ["100+", h.statBrands], ["1000+", h.statCustomers], ["50+", h.statTeam]];
   const L = lang as "en" | "az" | "ru";
 
-  const [partners, newsItems] = await Promise.all([fetchActivePartners(), fetchPublishedNews()]);
+  const [partners, newsItems, dbCats] = await Promise.all([fetchActivePartners(), fetchPublishedNews(), fetchActiveCategories()]);
 
   return (
     <>
@@ -248,15 +267,23 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
             <FadeLeft><Link href={`/${lang}/shop`} className="cats-viewall">{t.common.viewAll} →</Link></FadeLeft>
           </div>
           <div className="catgrid">
-            {CATEGORIES.map((c, i) => (
-              <FadeUp key={c.id} delay={(i % 4) * 0.055}>
+            {(dbCats.length > 0
+              ? dbCats
+              : CATEGORIES.map((c) => ({ id: 0, slug: c.id, nameEN: c.name.en, nameAZ: c.name.az, nameRU: c.name.ru, imageUrl: null, isActive: true, order: 0 }))
+            ).map((c, i) => (
+              <FadeUp key={c.slug} delay={(i % 4) * 0.055}>
                 <Link
-                  href={`/${lang}/shop?category=${c.id}`}
-                  className={`catcard catcard--${c.id}`}
+                  href={`/${lang}/shop?category=${c.slug}`}
+                  className={`catcard catcard--${c.slug}`}
                 >
-                  <div className="catcard__icon">{CATEGORY_ICONS[c.id]}</div>
+                  <div className="catcard__icon">
+                    {c.imageUrl
+                      ? <img src={c.imageUrl} alt={c.nameEN} width={26} height={26} style={{ objectFit: "contain" }} />
+                      : (CATEGORY_ICONS[c.slug] ?? CATEGORY_ICONS._default)
+                    }
+                  </div>
                   <div className="catcard__body">
-                    <span className="catcard__name">{c.name[lang]}</span>
+                    <span className="catcard__name">{{ en: c.nameEN, az: c.nameAZ, ru: c.nameRU }[L]}</span>
                   </div>
                   <svg className="catcard__arrow" viewBox="0 0 20 20" width="18" height="18" fill="none" aria-hidden="true">
                     <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
@@ -347,13 +374,18 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
           </FadeUp>
           <FadeUp delay={0.1}>
             <ul className="partners">
-              {partners.map((p) => (
-                <li key={p.id}>
-                  {p.logoUrl
-                    ? <img src={p.logoUrl} alt={p.name} style={{ maxHeight: 36, maxWidth: 120, objectFit: "contain" }} />
-                    : p.name}
-                </li>
-              ))}
+              {partners.map((p, i) => {
+                const inner = p.logoUrl
+                  ? <img src={p.logoUrl} alt={p.name} loading="lazy" />
+                  : <span className="partners__name">{p.name}</span>;
+                return (
+                  <li key={p.id} className="partners__item" style={{ transitionDelay: `${Math.min(i * 0.04, 0.3)}s` }}>
+                    {p.websiteUrl
+                      ? <a className="partners__link" href={p.websiteUrl} target="_blank" rel="noreferrer" aria-label={p.name}>{inner}</a>
+                      : <div className="partners__link">{inner}</div>}
+                  </li>
+                );
+              })}
             </ul>
           </FadeUp>
         </section>
@@ -371,12 +403,28 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
               const trans = n.translations.find((tr) => tr.lang === L.toUpperCase()) ?? n.translations[0];
               return (
                 <FadeUp key={n.id} delay={i * 0.08}>
-                  <Link href={`/${lang}/news/${n.slug}`} className="news">
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-                      {trans?.category && <span className="news-category-tag">{trans.category}</span>}
-                      {n.publishedAt && <time dateTime={n.publishedAt} style={{ fontSize: ".76rem", color: "var(--muted)" }}>{formatDay(n.publishedAt, lang)}</time>}
+                  <Link href={`/${lang}/news/${n.slug}`} className="news-full-card">
+                    <div className="news-full-card__img-wrap">
+                      {n.imageUrl ? (
+                        <Image
+                          src={n.imageUrl}
+                          alt={trans?.title ?? n.slug}
+                          width={400}
+                          height={220}
+                          className="news-full-card__img"
+                          unoptimized
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="news-full-card__img-placeholder" aria-hidden="true" />
+                      )}
                     </div>
-                    <h3>{trans?.title ?? n.slug}</h3>
+                    <div className="news-full-card__body">
+                      <div className="news-full-card__top">
+                        {n.publishedAt && <time dateTime={n.publishedAt} className="news-full-card__date">{formatDay(n.publishedAt, lang)}</time>}
+                      </div>
+                      <h3 className="news-full-card__title">{trans?.title ?? n.slug}</h3>
+                    </div>
                   </Link>
                 </FadeUp>
               );

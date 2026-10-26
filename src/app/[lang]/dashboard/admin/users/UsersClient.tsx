@@ -3,45 +3,43 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogForm,
 } from "@/components/ui/dialog";
+import { Users } from "lucide-react";
 import { formatDate } from "@/lib/format";
 import type { Dict, Locale } from "@/lib/i18n";
-
-interface User {
-  id: number;
-  name?: string;
-  email: string;
-  role: string;
-  isActive: boolean;
-  createdAt: string;
-}
+import {
+  useGetAllUsersQuery,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
+  useCreateAdminMutation,
+  type ApiUser,
+} from "@/redux/fetchers/user/userApi";
 
 export default function UsersClient({
-  users: initial,
   lang,
   t,
   currentUserId,
 }: {
-  users: User[];
   lang: string;
   t: Dict;
   currentUserId: number;
 }) {
-  const [users, setUsers] = useState(initial);
+  const { data: users = [], isLoading } = useGetAllUsersQuery();
+  const [updateUser] = useUpdateUserMutation();
+  const [deleteUser, { isLoading: deleting }] = useDeleteUserMutation();
+  const [createAdmin, { isLoading: creating }] = useCreateAdminMutation();
+
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", password: "" });
-  const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState("");
-  const [updating, setUpdating] = useState<number | null>(null);
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
-  const [deleting, setDeleting] = useState(false);
 
   const filtered = users.filter((u) => {
     if (!search) return true;
@@ -50,30 +48,20 @@ export default function UsersClient({
   });
 
   async function updateRole(id: number, role: string) {
-    setUpdating(id);
+    setUpdatingId(id);
     try {
-      const res = await fetch(`/api/admin/users/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role }),
-      });
-      if (res.ok) setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, role } : u)));
+      await updateUser({ id, role }).unwrap();
     } finally {
-      setUpdating(null);
+      setUpdatingId(null);
     }
   }
 
   async function toggleActive(id: number, isActive: boolean) {
-    setUpdating(id);
+    setUpdatingId(id);
     try {
-      const res = await fetch(`/api/admin/users/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ isActive }),
-      });
-      if (res.ok) setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, isActive } : u)));
+      await updateUser({ id, isActive }).unwrap();
     } finally {
-      setUpdating(null);
+      setUpdatingId(null);
     }
   }
 
@@ -84,43 +72,43 @@ export default function UsersClient({
 
   async function handleConfirmDelete() {
     if (pendingDeleteId == null) return;
-    setDeleting(true);
     try {
-      const res = await fetch(`/api/admin/users/${pendingDeleteId}`, { method: "DELETE" });
-      if (res.ok) setUsers((prev) => prev.filter((u) => u.id !== pendingDeleteId));
+      await deleteUser(pendingDeleteId).unwrap();
       setConfirmOpen(false);
       setPendingDeleteId(null);
-    } finally {
-      setDeleting(false);
+    } catch {
+      setConfirmOpen(false);
     }
   }
 
-  async function createAdmin(e: React.FormEvent) {
+  async function createAdminSubmit(e: React.FormEvent) {
     e.preventDefault();
     setCreateError("");
     if (!form.name.trim() || !form.email.trim() || form.password.length < 6) {
       setCreateError(t.dash.errPwRequired);
       return;
     }
-    setCreating(true);
     try {
-      const res = await fetch("/api/admin/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      if (!res.ok) { setCreateError(data.error || "Failed"); return; }
-      setUsers((prev) => [data.data, ...prev]);
+      await createAdmin(form).unwrap();
       setOpen(false);
       setForm({ name: "", email: "", password: "" });
-    } finally {
-      setCreating(false);
+    } catch (err: unknown) {
+      const msg = (err as { data?: { error?: string } })?.data?.error;
+      setCreateError(msg ?? "Failed to create admin");
     }
   }
 
   return (
     <div>
+      <div className="dash-page-header">
+        <div>
+          <h1 className="dash-page-title">{t.dash.users}</h1>
+          <p className="dash-page-sub">Manage user accounts, roles, and access.</p>
+        </div>
+        <Button type="button" size="sm" onClick={() => { setCreateError(""); setOpen(true); }} style={{ flexShrink: 0 }}>
+          + {t.dash.createAdmin}
+        </Button>
+      </div>
       <div className="dash-toolbar">
         <Input
           type="text"
@@ -130,13 +118,31 @@ export default function UsersClient({
           onChange={(e) => setSearch(e.target.value)}
           style={{ maxWidth: 280 }}
         />
-        <Button type="button" size="sm" onClick={() => { setCreateError(""); setOpen(true); }}>
-          + {t.dash.createAdmin}
-        </Button>
       </div>
 
-      {filtered.length === 0 ? (
-        <div className="dash-empty"><p>{t.dash.noData}</p></div>
+      {isLoading ? (
+        <div className="dash-table-wrap">
+          <table className="dash-table">
+            <thead><tr><th>{t.dash.name}</th><th>{t.dash.email}</th><th>{t.dash.role}</th><th>{t.dash.active}</th><th>{t.dash.date}</th><th>{t.dash.actions}</th></tr></thead>
+            <tbody>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <tr key={i}>
+                  <td><span className="skel skel--md" /></td>
+                  <td><span className="skel skel--md" /></td>
+                  <td><span className="skel skel--badge" /></td>
+                  <td><span className="skel skel--badge" /></td>
+                  <td><span className="skel skel--sm" /></td>
+                  <td><span className="skel skel--badge" /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="dash-empty">
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ opacity: 0.3 }}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <p>{t.dash.noData}</p>
+        </div>
       ) : (
         <div className="dash-table-wrap">
           <table className="dash-table">
@@ -151,7 +157,7 @@ export default function UsersClient({
               </tr>
             </thead>
             <tbody>
-              {filtered.map((u) => (
+              {filtered.map((u: ApiUser) => (
                 <tr key={u.id}>
                   <td>{u.name ?? "—"}</td>
                   <td>{u.email}</td>
@@ -162,7 +168,7 @@ export default function UsersClient({
                       <select
                         className="role-select"
                         value={u.role}
-                        disabled={updating === u.id}
+                        disabled={updatingId === u.id}
                         onChange={(e) => updateRole(u.id, e.target.value)}
                       >
                         <option value="ADMIN">ADMIN</option>
@@ -173,11 +179,13 @@ export default function UsersClient({
                   <td>
                     <button
                       type="button"
-                      className={`toggle-btn ${u.isActive ? "toggle-btn--on" : "toggle-btn--off"}`}
-                      disabled={updating === u.id || u.id === currentUserId}
+                      className={`toggle-switch${u.isActive ? " toggle-switch--on" : ""}`}
+                      disabled={updatingId === u.id || u.id === currentUserId}
                       onClick={() => toggleActive(u.id, !u.isActive)}
+                      aria-pressed={u.isActive}
+                      aria-label={u.isActive ? "Deactivate user" : "Activate user"}
                     >
-                      {u.isActive ? "●" : "○"}
+                      <span className="toggle-switch__knob" />
                     </button>
                   </td>
                   <td>{formatDate(u.createdAt, lang as Locale)}</td>
@@ -185,7 +193,7 @@ export default function UsersClient({
                     {u.id !== currentUserId && (
                       <Button
                         type="button" variant="destructive" size="sm"
-                        disabled={updating === u.id || deleting}
+                        disabled={updatingId === u.id || deleting}
                         onClick={() => promptDelete(u.id)}
                       >
                         ✕
@@ -199,7 +207,6 @@ export default function UsersClient({
         </div>
       )}
 
-      {/* Delete confirmation */}
       <ConfirmDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
@@ -213,32 +220,37 @@ export default function UsersClient({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent onInteractOutside={(e) => e.preventDefault()}>
           <DialogHeader>
-            <DialogTitle>{t.dash.createAdmin}</DialogTitle>
-            <DialogDescription>New admin account. Password min 6 characters.</DialogDescription>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div className="dlg-hdr-icon dlg-hdr-icon--blue"><Users size={20} strokeWidth={2} color="#fff" /></div>
+              <div>
+                <DialogTitle>{t.dash.createAdmin}</DialogTitle>
+                <DialogDescription>New admin account. Password min 6 characters.</DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
 
-          <DialogForm id="create-admin-form" onSubmit={createAdmin} noValidate>
+          <DialogForm id="create-admin-form" onSubmit={createAdminSubmit} noValidate>
             <DialogBody>
               {createError && <div className="auth-error mb-3">{createError}</div>}
 
-              <div className="space-y-3">
-                <div className="field">
-                  <Label htmlFor="ua-name">{t.dash.name}</Label>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div className="pf-field">
+                  <label htmlFor="ua-name" className="pf-label">{t.dash.name}</label>
                   <Input id="ua-name" type="text" value={form.name}
                     onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                    required className="mt-1" />
+                    required className="pf-input" />
                 </div>
-                <div className="field">
-                  <Label htmlFor="ua-email">{t.dash.email}</Label>
+                <div className="pf-field">
+                  <label htmlFor="ua-email" className="pf-label">{t.dash.email}</label>
                   <Input id="ua-email" type="email" value={form.email}
                     onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                    required className="mt-1" />
+                    required className="pf-input" />
                 </div>
-                <div className="field">
-                  <Label htmlFor="ua-password">{t.auth.password}</Label>
+                <div className="pf-field">
+                  <label htmlFor="ua-password" className="pf-label">{t.auth.password}</label>
                   <Input id="ua-password" type="password" value={form.password}
                     onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-                    required className="mt-1" />
+                    required className="pf-input" />
                 </div>
               </div>
             </DialogBody>

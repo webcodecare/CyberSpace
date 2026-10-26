@@ -22,10 +22,8 @@ import "./fetchers/product/productApi";
 import "./fetchers/inquiry/inquiryApi";
 import "./fetchers/settings/settingsApi";
 import "./fetchers/user/userApi";
-import "./fetchers/banner/bannerApi";
 import "./fetchers/partner/partnerApi";
 import "./fetchers/news/newsApi";
-import "./fetchers/homeContent/homeContentApi";
 import "./fetchers/category/categoryApi";
 
 const persistAuthConfig: PersistConfig<ReturnType<typeof authReducer>> = {

@@ -12,8 +12,7 @@ import {
 import ImageUpload from "@/components/dashboard/ImageUpload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Handshake } from "lucide-react";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogForm,
@@ -51,6 +50,18 @@ function cleanPayload(form: CreatePartnerInput): CreatePartnerInput {
 }
 
 const descKey = (l: LangKey) => `desc${l}` as keyof CreatePartnerInput;
+
+function hostnameOf(url: string): string {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    try {
+      return new URL(`https://${url}`).hostname;
+    } catch {
+      return url;
+    }
+  }
+}
 
 export default function PartnersClient({ t }: { t: Dict }) {
   const { data: partners = [], isLoading } = useGetPartnersQuery();
@@ -122,15 +133,26 @@ export default function PartnersClient({ t }: { t: Dict }) {
 
   return (
     <div>
-      <div className="dash-toolbar">
-        <h1 className="dash-page-title">{t.dash.partners ?? "Partners"}</h1>
-        <Button type="button" onClick={openCreate}>+ {t.dash.add ?? "Add"}</Button>
+      <div className="dash-page-header">
+        <div>
+          <h1 className="dash-page-title">{t.dash.partners ?? "Partners"}</h1>
+          <p className="dash-page-sub">Manage partner logos, descriptions, and website links.</p>
+        </div>
+        <Button type="button" size="sm" onClick={openCreate} style={{ flexShrink: 0 }}>
+          + {t.dash.add ?? "Add Partner"}
+        </Button>
       </div>
 
       {isLoading ? (
         <p className="muted">{t.common.loading}</p>
       ) : partners.length === 0 ? (
-        <div className="dash-empty"><p>{t.dash.noData}</p></div>
+        <div className="dash-empty">
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ opacity: 0.3 }}><path d="M17 20h5v-2a3 3 0 0 0-5.356-1.857"/><path d="M9 20H4v-2a3 3 0 0 1 5.356-1.857"/><circle cx="12" cy="7" r="4"/></svg>
+          <p>{t.dash.noData}</p>
+          <Button type="button" size="sm" variant="outline" className="dash-empty__cta" onClick={openCreate}>
+            {t.dash.add ?? "Add Partner"}
+          </Button>
+        </div>
       ) : (
         <div className="dash-table-wrap">
           <table className="dash-table">
@@ -156,7 +178,7 @@ export default function PartnersClient({ t }: { t: Dict }) {
                   <td>{p.name}</td>
                   <td>
                     {p.websiteUrl
-                      ? <a href={p.websiteUrl} target="_blank" rel="noreferrer" style={{ color: "var(--blue)" }}>{new URL(p.websiteUrl).hostname}</a>
+                      ? <a href={p.websiteUrl.startsWith("http") ? p.websiteUrl : `https://${p.websiteUrl}`} target="_blank" rel="noreferrer" style={{ color: "var(--blue)" }}>{hostnameOf(p.websiteUrl)}</a>
                       : "—"}
                   </td>
                   <td>{p.order}</td>
@@ -165,9 +187,11 @@ export default function PartnersClient({ t }: { t: Dict }) {
                       {p.isActive ? "Active" : "Off"}
                     </span>
                   </td>
-                  <td className="dash-actions">
+                  <td>
+                    <div className="dash-actions">
                     <Button type="button" variant="outline" size="sm" onClick={() => openEdit(p)}>{t.dash.edit ?? "Edit"}</Button>
                     <Button type="button" variant="destructive" size="sm" disabled={deleting} onClick={() => promptDelete(p.id)}>{t.dash.delete ?? "Delete"}</Button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -191,8 +215,13 @@ export default function PartnersClient({ t }: { t: Dict }) {
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent size="wide" onInteractOutside={(e) => e.preventDefault()}>
           <DialogHeader>
-            <DialogTitle>{editing ? (t.dash.edit ?? "Edit") : (t.dash.add ?? "Add")} Partner</DialogTitle>
-            <DialogDescription>Partner details and multilingual description.</DialogDescription>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div className="dlg-hdr-icon dlg-hdr-icon--cyan"><Handshake size={20} strokeWidth={2} color="#fff" /></div>
+              <div>
+                <DialogTitle>{editing ? (t.dash.edit ?? "Edit") : (t.dash.add ?? "Add")} Partner</DialogTitle>
+                <DialogDescription>Partner details and multilingual description.</DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
 
           <DialogForm id="partner-form" onSubmit={handleSubmit} noValidate>
@@ -200,10 +229,10 @@ export default function PartnersClient({ t }: { t: Dict }) {
               {error && <p className="pf-alert pf-alert--error" role="alert">{error}</p>}
               {success && <p className="notice notice--ok mb-3">{success}</p>}
 
-              <div className="field mb-3">
-                <Label htmlFor="p-name">Name *</Label>
+              <div className="pf-field" style={{ marginBottom: 12 }}>
+                <label htmlFor="p-name" className="pf-label">Name *</label>
                 <Input id="p-name" value={form.name} onChange={(e) => set("name", e.target.value)}
-                  disabled={busy} maxLength={200} className="mt-1" />
+                  disabled={busy} maxLength={200} className="pf-input" />
               </div>
 
               <ImageUpload
@@ -214,18 +243,17 @@ export default function PartnersClient({ t }: { t: Dict }) {
                 hint="PNG or SVG on white/transparent background"
               />
 
-              <div className="field mt-3">
-                <Label htmlFor="p-websiteUrl">Website</Label>
+              <div className="pf-field" style={{ marginTop: 12 }}>
+                <label htmlFor="p-websiteUrl" className="pf-label">Website</label>
                 <Input id="p-websiteUrl" type="url" value={form.websiteUrl ?? ""}
                   onChange={(e) => set("websiteUrl", e.target.value)}
-                  disabled={busy} placeholder="https://partner.com" className="mt-1" />
+                  disabled={busy} placeholder="https://partner.com" className="pf-input" />
               </div>
 
-              <div className="dash-lang-tabs mt-4" role="tablist">
-                <span style={{ fontSize: ".75rem", fontWeight: 700, color: "var(--muted)", padding: "7px 4px" }}>Description:</span>
+              <div className="pf-lang-tabs" style={{ marginTop: 16 }} role="tablist">
                 {LANGS.map((l) => (
                   <button key={l} type="button" role="tab" aria-selected={activeLang === l}
-                    className={`dash-lang-tab${activeLang === l ? " is-active" : ""}`}
+                    className={`pf-lang-tab${activeLang === l ? " is-active" : ""}`}
                     onClick={() => setActiveLang(l)}>
                     {l}
                   </button>
@@ -233,29 +261,29 @@ export default function PartnersClient({ t }: { t: Dict }) {
               </div>
 
               {LANGS.map((l) => (
-                <div key={l} style={{ display: activeLang === l ? "block" : "none" }} className="mt-2">
-                  <Label htmlFor={`p-desc-${l}`}>Description {l}</Label>
-                  <Textarea
+                <div key={l} className="pf-field" style={{ display: activeLang === l ? "flex" : "none", marginTop: 8 }}>
+                  <label htmlFor={`p-desc-${l}`} className="pf-label">Description {l}</label>
+                  <textarea
                     id={`p-desc-${l}`}
                     rows={4}
+                    className="pf-textarea"
                     value={(form[descKey(l)] as string) ?? ""}
                     onChange={(e) => setForm((prev) => ({ ...prev, [descKey(l)]: e.target.value }))}
                     disabled={busy}
                     placeholder={`Partner description in ${l}…`}
-                    className="mt-1"
                   />
                 </div>
               ))}
 
-              <div className="form-grid-2 mt-4">
-                <div className="field">
-                  <Label htmlFor="p-order">{t.dash.formOrder ?? "Order"}</Label>
+              <div className="pf-grid-2" style={{ marginTop: 16 }}>
+                <div className="pf-field">
+                  <label htmlFor="p-order" className="pf-label">{t.dash.formOrder ?? "Order"}</label>
                   <Input id="p-order" type="number" value={String(form.order)}
                     onChange={(e) => set("order", parseInt(e.target.value) || 0)}
-                    disabled={busy} className="mt-1" />
+                    disabled={busy} className="pf-input" />
                 </div>
-                <div className="field">
-                  <Label htmlFor="p-active" style={{ display: "block", marginBottom: 8 }}>{t.dash.formActive ?? "Active"}</Label>
+                <div className="pf-field">
+                  <label htmlFor="p-active" className="pf-label">{t.dash.formActive ?? "Active"}</label>
                   <div className="dash-check-wrap">
                     <input id="p-active" type="checkbox" className="dash-check" checked={form.isActive}
                       onChange={(e) => set("isActive", e.target.checked)}

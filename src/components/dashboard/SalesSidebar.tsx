@@ -6,6 +6,9 @@ import { useState } from "react";
 import type { Dict } from "@/lib/i18n";
 import type { JwtUser } from "@/lib/server-auth";
 import Logo from "@/components/Logo";
+import { useLogoutFromDbMutation } from "@/redux/fetchers/auth/authApi";
+import { logout } from "@/redux/fetchers/auth/authSlice";
+import { useAppDispatch } from "@/redux/store";
 
 interface Props {
   lang: string;
@@ -17,6 +20,8 @@ export default function SalesSidebar({ lang, t, user }: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const [logoutFromDb] = useLogoutFromDbMutation();
 
   const base = `/${lang}/dashboard/sales`;
 
@@ -30,7 +35,8 @@ export default function SalesSidebar({ lang, t, user }: Props) {
     exact ? pathname === href : pathname.startsWith(href) && (exact || href !== base || pathname === base);
 
   async function handleLogout() {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await logoutFromDb().unwrap().catch(() => {});
+    dispatch(logout());
     router.push(`/${lang}/login`);
     router.refresh();
   }
@@ -54,7 +60,7 @@ export default function SalesSidebar({ lang, t, user }: Props) {
         <button className="sidebar__hamburger" onClick={() => setMobileOpen(true)} aria-label="Open menu">
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
-        <Link href={`/${lang}`} className="dash-topbar__logo"><Logo /></Link>
+        <Link href={`/${lang}`} className="dash-topbar__logo"><Logo light /></Link>
         <div className="dash-topbar__user">
           <span className="sidebar__role-badge sidebar__role-badge--sales">SALES</span>
         </div>
@@ -62,7 +68,7 @@ export default function SalesSidebar({ lang, t, user }: Props) {
 
       <aside className="sidebar" aria-label="User panel">
         <div className="sidebar__header">
-          <Link href={`/${lang}`} className="sidebar__logo"><Logo /></Link>
+          <Link href={`/${lang}`} className="sidebar__logo"><Logo light /></Link>
         </div>
         <div className="sidebar__user">
           <div className="sidebar__avatar">{(user.name ?? user.email)[0].toUpperCase()}</div>
@@ -93,7 +99,7 @@ export default function SalesSidebar({ lang, t, user }: Props) {
       )}
       <aside className={`sidebar sidebar--mobile${mobileOpen ? " is-open" : ""}`} aria-label="User navigation mobile">
         <div className="sidebar__header">
-          <Link href={`/${lang}`} className="sidebar__logo" onClick={() => setMobileOpen(false)}><Logo /></Link>
+          <Link href={`/${lang}`} className="sidebar__logo" onClick={() => setMobileOpen(false)}><Logo light /></Link>
           <button className="sidebar__close" onClick={() => setMobileOpen(false)} aria-label="Close menu">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
           </button>

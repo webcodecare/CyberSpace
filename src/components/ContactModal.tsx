@@ -8,6 +8,7 @@ import { useSubmitInquiryMutation } from "@/redux/fetchers/inquiry/inquiryApi";
 import { useGetProductsQuery } from "@/redux/fetchers/product/productApi";
 import ProductImage from "./ProductImage";
 import type { CategoryId } from "@/data/catalog";
+import { toast } from "@/lib/toast";
 
 const PHONE_OK = (v: string) => /^\+?[0-9\s()\-]{7,20}$/.test(v) && v.replace(/\D/g, "").length >= 7;
 
@@ -42,10 +43,10 @@ export default function ContactModal() {
 
   useEffect(() => {
     if (isSuccess) {
-      const timer = setTimeout(() => dispatch(closeInquiry()), 1800);
-      return () => clearTimeout(timer);
+      dispatch(closeInquiry());
+      toast.success(t.inquiry.success, t.inquiry.note);
     }
-  }, [isSuccess, dispatch]);
+  }, [isSuccess, dispatch, t]);
 
   if (!productId || !product) return null;
 
@@ -84,14 +85,22 @@ export default function ContactModal() {
         </div>
 
         <div className="modal__product">
-          <div className="modal__thumb"><ProductImage category={product.category as CategoryId} label="" /></div>
-          <div><strong>{product.name}</strong><br /><span className="muted">{product.sku}</span></div>
+          <div className="modal__thumb">
+            {product.imageUrl
+              ? <img src={product.imageUrl} alt={product.name} className="modal__thumb-img" />
+              : <ProductImage category={product.category as CategoryId} label="" />
+            }
+          </div>
+          <div className="modal__product-info">
+            <strong className="modal__product-name">{product.name}</strong>
+            <span className="modal__product-sku">{product.sku}</span>
+            {product.price != null && (
+              <span className="modal__product-price">{product.price} {product.currency ?? ""}</span>
+            )}
+          </div>
         </div>
 
-        {isSuccess ? (
-          <p className="notice notice--ok" role="status">{t.inquiry.success}</p>
-        ) : (
-          <form onSubmit={submit} noValidate>
+        <form onSubmit={submit} noValidate>
             <div className="field">
               <label htmlFor="inq-name">{t.inquiry.name} *</label>
               <input id="inq-name" ref={nameRef} value={name} maxLength={80} autoComplete="name" placeholder={t.inquiry.namePh}
@@ -124,8 +133,7 @@ export default function ContactModal() {
               {busy ? t.inquiry.sending : t.inquiry.send}
             </button>
             <p className="muted small center">{t.inquiry.note}</p>
-          </form>
-        )}
+        </form>
       </div>
     </div>
   );

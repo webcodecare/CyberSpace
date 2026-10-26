@@ -174,29 +174,52 @@ export default function ProductsClient({ t }: { t: Dict }) {
   return (
     <div>
       {/* ── Page header ── */}
-      <div className="dash-toolbar">
-        <h1 className="dash-page-title">{t.dash.products}</h1>
-        <button type="button" className="btn btn--primary" onClick={openCreate}
-          style={{ display: "flex", alignItems: "center", gap: 7 }}>
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+      <div className="dash-page-header">
+        <div>
+          <h1 className="dash-page-title">{t.dash.products}</h1>
+          <p className="dash-page-sub">{t.dash.syncStatus} — {t.common.syncedFrom1C}</p>
+        </div>
+        <button type="button" className="btn btn--primary btn--sm" onClick={openCreate}
+          style={{ display: "flex", alignItems: "center", gap: 7, flexShrink: 0 }}>
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
           {t.dash.add ?? "Add Product"}
         </button>
       </div>
-      <p className="dash-page-sub dash-page-sub--note" style={{ marginBottom: 16 }}>
-        {t.dash.syncStatus} — {t.common.syncedFrom1C}
-      </p>
 
       {/* ── Table ── */}
       {isLoading ? (
-        <p className="muted">{t.common.loading}</p>
+        <div className="dash-table-wrap">
+          <table className="dash-table">
+            <thead><tr>
+              <th>Image</th><th>SKU</th><th>Name</th><th>Brand</th><th>Category</th><th>Stock</th><th>Price</th><th>Actions</th>
+            </tr></thead>
+            <tbody>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <tr key={i}>
+                  <td><span className="skel skel--thumb" /></td>
+                  <td><span className="skel skel--md" style={{ width: 70 }} /></td>
+                  <td><span className="skel skel--md" style={{ width: "80%" }} /></td>
+                  <td><span className="skel skel--sm" style={{ width: 60 }} /></td>
+                  <td><span className="skel skel--badge" /></td>
+                  <td><span className="skel skel--sm" style={{ width: 30 }} /></td>
+                  <td><span className="skel skel--sm" style={{ width: 60 }} /></td>
+                  <td><span className="skel skel--badge" /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : products.length === 0 ? (
         <div className="dash-empty">
-          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" style={{ opacity: 0.3 }}>
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" style={{ opacity: 0.3 }}>
             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
             <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
             <line x1="12" x2="12" y1="22.08" y2="12"/>
           </svg>
           <p>{t.dash.noData}</p>
+          <button type="button" className="btn btn--ghost btn--sm dash-empty__cta" onClick={openCreate}>
+            {t.dash.add ?? "Add Product"}
+          </button>
         </div>
       ) : (
         <div className="dash-table-wrap">
@@ -222,15 +245,19 @@ export default function ProductsClient({ t }: { t: Dict }) {
                       : <div className="dash-thumb-placeholder"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
                     }
                   </td>
-                  <td><code className="dash-code">{p.sku}</code></td>
-                  <td>{p.name}</td>
+                  <td style={{ maxWidth: 160 }}><code className="dash-code" style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={p.sku}>{p.sku}</code></td>
+                  <td><span className="dash-name">{p.name}</span></td>
                   <td>{p.brand || "—"}</td>
-                  <td><span className="dash-pill">{p.category}</span></td>
+                  <td>
+                    {(() => { const name = categories.find((c) => c.slug === p.category)?.nameEN ?? p.category; return <span className="dash-pill" title={name}>{name}</span>; })()}
+                  </td>
                   <td>{p.stock ?? "—"}</td>
-                  <td>{p.price != null ? `${p.price} ${p.currency ?? ""}` : "—"}</td>
-                  <td className="dash-actions">
-                    <Button type="button" variant="outline" size="sm" onClick={() => openEdit(p)}>{t.dash.edit ?? "Edit"}</Button>
-                    <Button type="button" variant="destructive" size="sm" disabled={deleting} onClick={() => promptDelete(p.id)}>{t.dash.delete ?? "Delete"}</Button>
+                  <td style={{ whiteSpace: "nowrap" }}>{p.price != null ? `${p.price} ${p.currency ?? ""}` : "—"}</td>
+                  <td>
+                    <div className="dash-actions">
+                      <Button type="button" variant="outline" size="sm" onClick={() => openEdit(p)}>{t.dash.edit ?? "Edit"}</Button>
+                      <Button type="button" variant="destructive" size="sm" disabled={deleting} onClick={() => promptDelete(p.id)}>{t.dash.delete ?? "Delete"}</Button>
+                    </div>
                   </td>
                 </tr>
               ))}

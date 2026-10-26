@@ -11,7 +11,10 @@ export default async function AdminChangePasswordPage({ params }: { params: Prom
   return (
     <div>
       <div className="dash-page-header">
-        <h1 className="dash-page-title">{t.dash.changePassword}</h1>
+        <div>
+          <h1 className="dash-page-title">{t.dash.changePassword}</h1>
+          <p className="dash-page-sub">Update your admin account password.</p>
+        </div>
       </div>
       <ChangePasswordForm t={t} />
     </div>

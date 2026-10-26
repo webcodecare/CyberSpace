@@ -2,10 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { CATEGORIES, type CategoryId } from "@/data/catalog";
+import { CATEGORIES } from "@/data/catalog";
 import { useLang } from "@/lib/useLang";
 import { useGetProductsQuery } from "@/redux/fetchers/product/productApi";
 import { useGetSettingsQuery } from "@/redux/fetchers/settings/settingsApi";
+import { useGetCategoriesQuery } from "@/redux/fetchers/category/categoryApi";
 import { useAppDispatch } from "@/redux/store";
 import { openInquiry } from "@/redux/inquirySlice";
 import ProductCard from "./ProductCard";
@@ -20,8 +21,16 @@ export default function ShopClient() {
 
   const { data: rawProducts = [], isLoading, isError, refetch } = useGetProductsQuery();
   const { data: settings = { showPrices: true, showStock: true } } = useGetSettingsQuery();
+  const { data: dbCats = [] } = useGetCategoriesQuery();
 
-  const [category, setCategory] = useState<CategoryId | null>(null);
+  const categories = useMemo(() =>
+    dbCats.length > 0
+      ? dbCats.map((c) => ({ id: c.slug, name: { en: c.nameEN, az: c.nameAZ, ru: c.nameRU } }))
+      : CATEGORIES,
+    [dbCats]
+  );
+
+  const [category, setCategory] = useState<string | null>(null);
   const [brands, setBrands] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [priceMin, setPriceMin] = useState<number | null>(null);
@@ -34,10 +43,10 @@ export default function ShopClient() {
   useEffect(() => {
     if (rawProducts.length === 0) return;
     const c = params.get("category");
-    if (c && CATEGORIES.some((x) => x.id === c)) setCategory(c as CategoryId);
+    if (c && categories.some((x) => x.id === c)) setCategory(c);
     const q = params.get("q");
     if (q) setQuery(q);
-  }, [params, rawProducts.length]);
+  }, [params, rawProducts.length, categories]);
 
   const products = useMemo(() =>
     rawProducts.map((p) => ({
@@ -147,7 +156,7 @@ export default function ShopClient() {
                   <span>{t.common.all}</span><span className="count">{products.length}</span>
                 </button>
               </li>
-              {CATEGORIES.map((c) => (
+              {categories.map((c) => (
                 <li key={c.id}>
                   <button
                     type="button"

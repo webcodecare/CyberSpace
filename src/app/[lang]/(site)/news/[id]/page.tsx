@@ -15,7 +15,6 @@ interface NewsTranslation {
   title: string;
   excerpt: string | null;
   body: string | null;
-  category: string | null;
 }
 
 interface NewsItem {
@@ -108,7 +107,6 @@ export default async function NewsDetail({ params }: { params: Params }) {
         <header className="news-detail__header container">
           <FadeDown>
             <div className="news-detail__meta">
-              {trans.category && <span className="news-category-tag">{trans.category}</span>}
               {article.publishedAt && (
                 <time dateTime={article.publishedAt} className="news-detail__date">
                   {formatDay(article.publishedAt, lang)}
@@ -186,7 +184,6 @@ export default async function NewsDetail({ params }: { params: Params }) {
                       </div>
                       <div className="news-full-card__body">
                         <div className="news-full-card__top">
-                          {rTrans?.category && <span className="news-category-tag">{rTrans.category}</span>}
                           {n.publishedAt && (
                             <time dateTime={n.publishedAt} className="news-full-card__date">
                               {formatDay(n.publishedAt, lang)}

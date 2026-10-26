@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { LOCALES, LOCALE_LABEL, type Locale } from "@/lib/i18n";
 import { useLang } from "@/lib/useLang";
 import Logo from "./Logo";
+import { useAuthUser } from "@/redux/fetchers/auth/authSlice";
 
 const NAV = [
   ["home", ""], ["about", "/about"], ["products", "/shop"], ["solutions", "/solutions"], ["services", "/services"],
@@ -17,13 +18,17 @@ const EASE = [0.25, 0.1, 0.25, 1] as const;
 
 export default function Header() {
   const { lang, t } = useLang();
+  const user = useAuthUser();
   const pathname = usePathname() || `/${lang}`;
   const [open, setOpen] = useState(false);
   const base = `/${lang}`;
+  const authHref = user ? `${base}/dashboard` : `${base}/login`;
+  const authLabel = user ? t.nav.dashboard : t.nav.login;
   const rest = pathname.replace(/^\/[^/]+/, "") || "";
   const isActive = (href: string) => (href === "" ? rest === "" : rest.startsWith(href));
   const swap = (l: Locale) => `/${l}${rest}`;
   const close = () => setOpen(false);
+ 
 
   // Close on Escape
   useEffect(() => {
@@ -54,9 +59,9 @@ export default function Header() {
               {t.nav[key]}
             </Link>
           ))}
-          <Link href={`${base}/login`}
+          <Link href={authHref}
             className={`nav__link nav__login${isActive("/login") || isActive("/dashboard") ? " is-active" : ""}`}>
-            {t.nav.login}
+            {authLabel}
           </Link>
         </nav>
 
@@ -148,10 +153,10 @@ export default function Header() {
             <motion.div
               initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.07 + NAV.length * 0.034, duration: 0.22, ease: EASE }}>
-              <Link href={`${base}/login`}
+              <Link href={authHref}
                 className={`mobile-nav__link${isActive("/login") || isActive("/dashboard") ? " is-active" : ""}`}
                 onClick={close}>
-                {t.nav.login}
+                {authLabel}
               </Link>
             </motion.div>
           </motion.nav>

@@ -12,7 +12,7 @@ import {
 import ImageUpload from "@/components/dashboard/ImageUpload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Layers } from "lucide-react";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogForm,
@@ -120,15 +120,46 @@ export default function CategoriesClient({ t }: { t: Dict }) {
 
   return (
     <div>
-      <div className="dash-toolbar">
-        <h1 className="dash-page-title">{t.dash.categories ?? "Categories"}</h1>
-        <Button type="button" onClick={openCreate}>+ {t.dash.add ?? "Add"}</Button>
+      <div className="dash-page-header">
+        <div>
+          <h1 className="dash-page-title">{t.dash.categories ?? "Categories"}</h1>
+          <p className="dash-page-sub">Manage product categories and their multilingual names.</p>
+        </div>
+        <Button type="button" size="sm" onClick={openCreate} style={{ flexShrink: 0 }}>
+          + {t.dash.add ?? "Add Category"}
+        </Button>
       </div>
 
       {isLoading ? (
-        <p className="muted">{t.common.loading}</p>
+        <div className="dash-table-wrap">
+          <table className="dash-table">
+            <thead><tr>
+              <th>Image</th><th>Slug</th><th>EN</th><th>AZ</th><th>RU</th><th>Order</th><th>Active</th><th>Actions</th>
+            </tr></thead>
+            <tbody>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <tr key={i}>
+                  <td><span className="skel skel--thumb" /></td>
+                  <td><span className="skel skel--md" style={{ width: 80 }} /></td>
+                  <td><span className="skel skel--md" style={{ width: "70%" }} /></td>
+                  <td><span className="skel skel--sm" style={{ width: "60%" }} /></td>
+                  <td><span className="skel skel--sm" style={{ width: "60%" }} /></td>
+                  <td><span className="skel skel--sm" style={{ width: 24 }} /></td>
+                  <td><span className="skel skel--badge" /></td>
+                  <td><span className="skel skel--badge" /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : categories.length === 0 ? (
-        <div className="dash-empty"><p>{t.dash.noData}</p></div>
+        <div className="dash-empty">
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ opacity: 0.3 }}><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+          <p>{t.dash.noData}</p>
+          <Button type="button" size="sm" variant="outline" className="dash-empty__cta" onClick={openCreate}>
+            {t.dash.add ?? "Add Category"}
+          </Button>
+        </div>
       ) : (
         <div className="dash-table-wrap">
           <table className="dash-table">
@@ -158,10 +189,16 @@ export default function CategoriesClient({ t }: { t: Dict }) {
                   <td>{c.nameAZ}</td>
                   <td>{c.nameRU}</td>
                   <td>{c.order}</td>
-                  <td>{c.isActive ? "✓" : "—"}</td>
-                  <td className="dash-actions">
+                  <td>
+                    <span className={`status-badge ${c.isActive ? "status-badge--ok" : "status-badge--off"}`}>
+                      {c.isActive ? "Active" : "Off"}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="dash-actions">
                     <Button type="button" variant="outline" size="sm" onClick={() => openEdit(c)}>{t.dash.edit ?? "Edit"}</Button>
                     <Button type="button" variant="destructive" size="sm" disabled={deleting} onClick={() => promptDelete(c.id)}>{t.dash.delete ?? "Delete"}</Button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -184,42 +221,47 @@ export default function CategoriesClient({ t }: { t: Dict }) {
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent onInteractOutside={(e) => e.preventDefault()}>
           <DialogHeader>
-            <DialogTitle>{editing ? (t.dash.edit ?? "Edit") : (t.dash.add ?? "Add")} {t.dash.categories ?? "Category"}</DialogTitle>
-            <DialogDescription>Set slug, multilingual names, image and sort order.</DialogDescription>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div className="dlg-hdr-icon dlg-hdr-icon--green"><Layers size={20} strokeWidth={2} color="#fff" /></div>
+              <div>
+                <DialogTitle>{editing ? (t.dash.edit ?? "Edit") : (t.dash.add ?? "Add")} {t.dash.categories ?? "Category"}</DialogTitle>
+                <DialogDescription>Set slug, multilingual names, image and sort order.</DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
 
           <DialogForm id="category-form" onSubmit={handleSubmit} noValidate>
             <DialogBody>
-              {error && <p className="err mb-3" role="alert">{error}</p>}
-              {success && <p className="notice notice--ok mb-3">{success}</p>}
+              {error && <p className="pf-alert pf-alert--error" role="alert">{error}</p>}
+              {success && <p className="pf-alert pf-alert--success">{success}</p>}
 
-              <div className="field mb-3">
-                <Label htmlFor="cat-slug">
-                  Slug * <span className="text-xs text-[#5b6b82] ml-1">(auto-lowercased, spaces→hyphens)</span>
-                </Label>
+              <div className="pf-field" style={{ marginBottom: 12 }}>
+                <label htmlFor="cat-slug" className="pf-label">
+                  Slug * <span style={{ fontWeight: 400, fontSize: ".72rem", color: "#8899aa", marginLeft: 4 }}>(auto-lowercased, spaces→hyphens)</span>
+                </label>
                 <Input id="cat-slug" value={form.slug}
                   onChange={(e) => setField("slug", e.target.value)}
-                  disabled={busy || !!editing} maxLength={60} placeholder="e.g. servers" className="mt-1" />
+                  disabled={busy || !!editing} maxLength={60} placeholder="e.g. servers" className="pf-input" />
               </div>
 
-              <div className="form-grid-3 mb-3">
-                <div className="field">
-                  <Label htmlFor="cat-en">Name EN *</Label>
+              <div className="pf-grid-3" style={{ marginBottom: 12 }}>
+                <div className="pf-field">
+                  <label htmlFor="cat-en" className="pf-label">Name EN *</label>
                   <Input id="cat-en" value={form.nameEN}
                     onChange={(e) => setField("nameEN", e.target.value)}
-                    disabled={busy} maxLength={100} className="mt-1" />
+                    disabled={busy} maxLength={100} className="pf-input" />
                 </div>
-                <div className="field">
-                  <Label htmlFor="cat-az">Name AZ</Label>
+                <div className="pf-field">
+                  <label htmlFor="cat-az" className="pf-label">Name AZ</label>
                   <Input id="cat-az" value={form.nameAZ}
                     onChange={(e) => setField("nameAZ", e.target.value)}
-                    disabled={busy} maxLength={100} className="mt-1" />
+                    disabled={busy} maxLength={100} className="pf-input" />
                 </div>
-                <div className="field">
-                  <Label htmlFor="cat-ru">Name RU</Label>
+                <div className="pf-field">
+                  <label htmlFor="cat-ru" className="pf-label">Name RU</label>
                   <Input id="cat-ru" value={form.nameRU}
                     onChange={(e) => setField("nameRU", e.target.value)}
-                    disabled={busy} maxLength={100} className="mt-1" />
+                    disabled={busy} maxLength={100} className="pf-input" />
                 </div>
               </div>
 
@@ -231,18 +273,18 @@ export default function CategoriesClient({ t }: { t: Dict }) {
                 hint="PNG or SVG recommended"
               />
 
-              <div className="form-grid-2 mt-3">
-                <div className="field">
-                  <Label htmlFor="cat-order">{t.dash.formOrder ?? "Order"}</Label>
+              <div className="pf-grid-2" style={{ marginTop: 12 }}>
+                <div className="pf-field">
+                  <label htmlFor="cat-order" className="pf-label">{t.dash.formOrder ?? "Order"}</label>
                   <Input id="cat-order" type="number" min="0" value={form.order}
                     onChange={(e) => setField("order", e.target.value)}
-                    disabled={busy} className="mt-1" />
+                    disabled={busy} className="pf-input" />
                 </div>
-                <div className="field flex items-center gap-2 pt-6">
+                <div className="pf-field" style={{ flexDirection: "row", alignItems: "center", gap: 8, paddingTop: 20 }}>
                   <input id="cat-active" type="checkbox" checked={form.isActive}
                     onChange={(e) => setField("isActive", e.target.checked)}
                     disabled={busy} style={{ width: 16, height: 16 }} />
-                  <Label htmlFor="cat-active">{t.dash.formActive ?? "Active"}</Label>
+                  <label htmlFor="cat-active" className="pf-label" style={{ marginBottom: 0 }}>{t.dash.formActive ?? "Active"}</label>
                 </div>
               </div>
             </DialogBody>

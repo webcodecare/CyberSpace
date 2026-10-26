@@ -3,10 +3,8 @@ export const tagTypes = {
   product: "product",
   inquiry: "inquiry",
   settings: "settings",
-  banner: "banner",
   partner: "partner",
   news: "news",
-  homeContent: "homeContent",
   category: "category",
 } as const;
 

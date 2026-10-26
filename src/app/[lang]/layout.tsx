@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { LOCALES, getDict, isLocale } from "@/lib/i18n";
 import { SITE_URL, pageMeta } from "@/lib/seo";
 import StoreProvider from "@/redux/StoreProvider";
+import Toaster from "@/components/Toaster";
 
 export const dynamicParams = false;
 
@@ -30,5 +31,5 @@ export default async function LangLayout({
 }) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
-  return <StoreProvider>{children}</StoreProvider>;
+  return <StoreProvider>{children}<Toaster /></StoreProvider>;
 }

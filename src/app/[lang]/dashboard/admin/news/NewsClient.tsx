@@ -12,8 +12,7 @@ import {
 import ImageUpload from "@/components/dashboard/ImageUpload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Newspaper } from "lucide-react";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogForm,
@@ -24,7 +23,7 @@ import type { Dict, Locale } from "@/lib/i18n";
 type Lang = "EN" | "AZ" | "RU";
 const LANGS: Lang[] = ["EN", "AZ", "RU"];
 
-interface TranslationForm { title: string; category: string; excerpt: string; body: string; }
+interface TranslationForm { title: string; excerpt: string; body: string; }
 
 interface FormState {
   slug: string; imageUrl: string; authorName: string;
@@ -32,7 +31,7 @@ interface FormState {
   EN: TranslationForm; AZ: TranslationForm; RU: TranslationForm;
 }
 
-const emptyTrans = (): TranslationForm => ({ title: "", category: "", excerpt: "", body: "" });
+const emptyTrans = (): TranslationForm => ({ title: "", excerpt: "", body: "" });
 const emptyForm = (): FormState => ({
   slug: "", imageUrl: "", authorName: "", status: "DRAFT", publishedAt: "", order: "0",
   EN: emptyTrans(), AZ: emptyTrans(), RU: emptyTrans(),
@@ -44,16 +43,16 @@ function itemToForm(item: NewsItem): FormState {
     slug: item.slug, imageUrl: item.imageUrl ?? "", authorName: item.authorName ?? "",
     status: item.status, publishedAt: item.publishedAt ? item.publishedAt.slice(0, 10) : "",
     order: String(item.order ?? 0),
-    EN: { title: byLang("EN")?.title ?? "", category: byLang("EN")?.category ?? "", excerpt: byLang("EN")?.excerpt ?? "", body: byLang("EN")?.body ?? "" },
-    AZ: { title: byLang("AZ")?.title ?? "", category: byLang("AZ")?.category ?? "", excerpt: byLang("AZ")?.excerpt ?? "", body: byLang("AZ")?.body ?? "" },
-    RU: { title: byLang("RU")?.title ?? "", category: byLang("RU")?.category ?? "", excerpt: byLang("RU")?.excerpt ?? "", body: byLang("RU")?.body ?? "" },
+    EN: { title: byLang("EN")?.title ?? "", excerpt: byLang("EN")?.excerpt ?? "", body: byLang("EN")?.body ?? "" },
+    AZ: { title: byLang("AZ")?.title ?? "", excerpt: byLang("AZ")?.excerpt ?? "", body: byLang("AZ")?.body ?? "" },
+    RU: { title: byLang("RU")?.title ?? "", excerpt: byLang("RU")?.excerpt ?? "", body: byLang("RU")?.body ?? "" },
   };
 }
 
 function formToPayload(f: FormState): CreateNewsInput {
   const translations = LANGS
     .filter((l) => f[l].title.trim())
-    .map((l) => ({ lang: l, title: f[l].title.trim(), category: f[l].category.trim(), excerpt: f[l].excerpt.trim(), body: f[l].body.trim() }));
+    .map((l) => ({ lang: l, title: f[l].title.trim(), excerpt: f[l].excerpt.trim(), body: f[l].body.trim() }));
   return {
     slug: f.slug.trim(), imageUrl: f.imageUrl.trim() || undefined, authorName: f.authorName.trim() || undefined,
     status: f.status, publishedAt: f.publishedAt ? new Date(f.publishedAt).toISOString() : undefined,
@@ -141,17 +140,25 @@ export default function NewsClient({ lang, t }: { lang: string; t: Dict }) {
 
   return (
     <div>
-      <div className="dash-toolbar">
-        <h1 className="dash-page-title">{t.dash.news ?? "News"}</h1>
-        <Button type="button" onClick={openCreate}>+ {t.dash.add ?? "Add"}</Button>
+      <div className="dash-page-header">
+        <div>
+          <h1 className="dash-page-title">{t.dash.news ?? "News"}</h1>
+          <p className="dash-page-sub">Publish and manage news articles in all languages.</p>
+        </div>
+        <Button type="button" size="sm" onClick={openCreate} style={{ flexShrink: 0 }}>
+          + {t.dash.add ?? "New Article"}
+        </Button>
       </div>
 
       {isLoading ? (
         <p className="muted">{t.common.loading}</p>
       ) : news.length === 0 ? (
         <div className="dash-empty">
-          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ opacity: 0.3 }}><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>
           <p>{t.dash.noData}</p>
+          <Button type="button" size="sm" variant="outline" className="dash-empty__cta" onClick={openCreate}>
+            {t.dash.add ?? "New Article"}
+          </Button>
         </div>
       ) : (
         <div className="dash-table-wrap">
@@ -175,17 +182,19 @@ export default function NewsClient({ lang, t }: { lang: string; t: Dict }) {
                       : <div className="dash-thumb-placeholder"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
                     }
                   </td>
-                  <td>{getTitle(item)}</td>
-                  <td><code className="dash-code">{item.slug}</code></td>
+                  <td className="dash-ellipsis-cell" title={getTitle(item)}>{getTitle(item)}</td>
+                  <td><code className="dash-code" title={item.slug}>{item.slug}</code></td>
                   <td>
                     <span className={`status-badge ${item.status === "PUBLISHED" ? "status-badge--published" : "status-badge--draft"}`}>
                       {item.status === "PUBLISHED" ? (t.dash.published ?? "Published") : (t.dash.draft ?? "Draft")}
                     </span>
                   </td>
                   <td>{item.publishedAt ? formatDate(item.publishedAt, L) : "—"}</td>
-                  <td className="dash-actions">
+                  <td>
+                    <div className="dash-actions">
                     <Button type="button" variant="outline" size="sm" onClick={() => openEdit(item)}>{t.dash.edit ?? "Edit"}</Button>
                     <Button type="button" variant="destructive" size="sm" disabled={deleting} onClick={() => promptDelete(item.id)}>{t.dash.delete ?? "Delete"}</Button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -209,8 +218,13 @@ export default function NewsClient({ lang, t }: { lang: string; t: Dict }) {
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent size="xl" onInteractOutside={(e) => e.preventDefault()}>
           <DialogHeader>
-            <DialogTitle>{editing ? "Edit Article" : "New Article"}</DialogTitle>
-            <DialogDescription>Fill in article content for each language tab.</DialogDescription>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div className="dlg-hdr-icon dlg-hdr-icon--amber"><Newspaper size={20} strokeWidth={2} color="#fff" /></div>
+              <div>
+                <DialogTitle>{editing ? "Edit Article" : "New Article"}</DialogTitle>
+                <DialogDescription>Fill in article content for each language tab.</DialogDescription>
+              </div>
+            </div>
           </DialogHeader>
 
           <DialogForm id="news-form" onSubmit={handleSubmit} noValidate>
@@ -218,53 +232,45 @@ export default function NewsClient({ lang, t }: { lang: string; t: Dict }) {
               {error && <p className="pf-alert pf-alert--error" role="alert">{error}</p>}
               {success && <p className="notice notice--ok mb-3">{success}</p>}
 
-              <div className="form-grid-2 mb-4">
-                <div className="field">
-                  <Label htmlFor="n-slug">Slug *</Label>
+              <div className="pf-grid-2" style={{ marginBottom: 16 }}>
+                <div className="pf-field">
+                  <label htmlFor="n-slug" className="pf-label">Slug *</label>
                   <Input id="n-slug" value={form.slug}
                     onChange={(e) => setField("slug", e.target.value.toLowerCase().replace(/\s+/g, "-"))}
-                    disabled={busy || !!editing} placeholder="my-article-slug" className="mt-1" />
+                    disabled={busy || !!editing} placeholder="my-article-slug" className="pf-input" />
                 </div>
-                <div className="field">
-                  <Label htmlFor="n-authorName">Author</Label>
+                <div className="pf-field">
+                  <label htmlFor="n-authorName" className="pf-label">Author</label>
                   <Input id="n-authorName" value={form.authorName}
                     onChange={(e) => setField("authorName", e.target.value)}
-                    disabled={busy} className="mt-1" />
+                    disabled={busy} className="pf-input" />
                 </div>
-                <div className="field">
-                  <Label htmlFor="n-status">Status</Label>
-                  <select id="n-status" className="field select mt-1 w-full" value={form.status}
+                <div className="pf-field">
+                  <label htmlFor="n-status" className="pf-label">Status</label>
+                  <select id="n-status" className="pf-select" value={form.status}
                     onChange={(e) => setField("status", e.target.value as "DRAFT" | "PUBLISHED")} disabled={busy}>
                     <option value="DRAFT">{t.dash.draft ?? "Draft"}</option>
                     <option value="PUBLISHED">{t.dash.published ?? "Published"}</option>
                   </select>
                 </div>
-                <div className="field">
-                  <Label htmlFor="n-publishedAt">Publish Date</Label>
+                <div className="pf-field">
+                  <label htmlFor="n-publishedAt" className="pf-label">Publish Date</label>
                   <Input id="n-publishedAt" type="date" value={form.publishedAt}
                     onChange={(e) => setField("publishedAt", e.target.value)}
-                    disabled={busy} className="mt-1" />
+                    disabled={busy} className="pf-input" />
                 </div>
-                <div className="field">
-                  <Label htmlFor="n-order">{t.dash.formOrder ?? "Order"}</Label>
+                <div className="pf-field">
+                  <label htmlFor="n-order" className="pf-label">{t.dash.formOrder ?? "Order"}</label>
                   <Input id="n-order" type="number" value={form.order}
                     onChange={(e) => setField("order", e.target.value)}
-                    disabled={busy} className="mt-1" />
+                    disabled={busy} className="pf-input" />
                 </div>
               </div>
 
-              <ImageUpload
-                value={form.imageUrl}
-                onChange={(url) => setField("imageUrl", url)}
-                disabled={busy}
-                label="Cover Image"
-                hint="JPG, PNG or WebP · recommended 1200×630"
-              />
-
-              <div className="dash-lang-tabs mt-4" role="tablist">
+              <div className="pf-lang-tabs" style={{ marginTop: 4 }} role="tablist">
                 {LANGS.map((l) => (
                   <button key={l} type="button" role="tab" aria-selected={activeLang === l}
-                    className={`dash-lang-tab${activeLang === l ? " is-active" : ""}`}
+                    className={`pf-lang-tab${activeLang === l ? " is-active" : ""}`}
                     onClick={() => setActiveLang(l)}>
                     {l}
                   </button>
@@ -272,36 +278,41 @@ export default function NewsClient({ lang, t }: { lang: string; t: Dict }) {
               </div>
 
               {LANGS.map((l) => (
-                <div key={l} className="space-y-3 mt-3" style={{ display: activeLang === l ? "block" : "none" }}>
-                  <div className="field">
-                    <Label>Title {l} {l === "EN" ? "*" : ""}</Label>
+                <div key={l} style={{ display: activeLang === l ? "flex" : "none", flexDirection: "column", gap: 12, marginTop: 12 }}>
+                  <div className="pf-field">
+                    <label className="pf-label">Title {l} {l === "EN" ? "*" : ""}</label>
                     <Input value={form[l].title} onChange={(e) => setTransField(l, "title", e.target.value)}
-                      disabled={busy} className="mt-1" />
+                      disabled={busy} className="pf-input" />
                   </div>
-                  <div className="field">
-                    <Label>Category {l}</Label>
-                    <Input value={form[l].category} onChange={(e) => setTransField(l, "category", e.target.value)}
-                      disabled={busy} placeholder="e.g. Products, Networking" className="mt-1" />
-                  </div>
-                  <div className="field">
-                    <Label>Excerpt {l}</Label>
-                    <Textarea rows={2} value={form[l].excerpt}
+                  <div className="pf-field">
+                    <label className="pf-label">Excerpt {l}</label>
+                    <textarea rows={2} className="pf-textarea" value={form[l].excerpt}
                       onChange={(e) => setTransField(l, "excerpt", e.target.value)}
-                      disabled={busy} className="mt-1" />
+                      disabled={busy} />
                   </div>
-                  <div className="field">
-                    <Label>Body {l}</Label>
-                    <Textarea
+                  <div className="pf-field">
+                    <label className="pf-label">Body {l}</label>
+                    <textarea
                       rows={8}
+                      className="pf-textarea"
                       value={form[l].body}
                       onChange={(e) => setTransField(l, "body", e.target.value)}
                       disabled={busy}
                       placeholder={`Full article text in ${l}…`}
-                      className="mt-1"
                     />
                   </div>
                 </div>
               ))}
+
+              <div style={{ marginTop: 16 }}>
+                <ImageUpload
+                  value={form.imageUrl}
+                  onChange={(url) => setField("imageUrl", url)}
+                  disabled={busy}
+                  label="Cover Image"
+                  hint="JPG, PNG or WebP · recommended 1200×630"
+                />
+              </div>
             </DialogBody>
 
             <DialogFooter>

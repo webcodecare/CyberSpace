@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { BACKEND_URL, COOKIE_NAME } from "@/lib/server-auth";
+import { JwtDecode } from "@/lib/jwt_decode";
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,7 +15,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: data.message || "Login failed" }, { status: res.status });
     }
     const { access_token } = data.data;
-    const response = NextResponse.json({ success: true });
+    const user = JwtDecode(access_token);
+    const response = NextResponse.json({ success: true, data: user });
     response.cookies.set(COOKIE_NAME, access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

@@ -24,8 +24,8 @@ export const settingsApi = baseApi.injectEndpoints({
         };
       },
     }),
-    updateSettings: builder.mutation<{ success: boolean }, Partial<SettingsData>>({
-      query: (body) => ({ url: "/admin/settings", method: "PUT", body }),
+    updateSettings: builder.mutation<{ success: boolean }, { key: string; value: boolean }>({
+      query: (body) => ({ url: "/admin/settings", method: "PATCH", body }),
       invalidatesTags: [tagTypes.settings],
     }),
   }),
