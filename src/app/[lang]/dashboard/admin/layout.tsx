@@ -3,6 +3,7 @@ import { getServerSession } from "@/lib/server-auth";
 import { isLocale, getDict } from "@/lib/i18n";
 import { notFound } from "next/navigation";
 import AdminSidebar from "@/components/dashboard/AdminSidebar";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,7 @@ export default async function AdminLayout({
     <div className="dash-shell">
       <AdminSidebar lang={lang} t={t} user={session} />
       <div className="dash-main">
+        <DashboardHeader lang={lang} t={t} user={session} />
         <div className="dash-content">{children}</div>
       </div>
     </div>

@@ -9,6 +9,7 @@ import Logo from "@/components/Logo";
 import { useLogoutFromDbMutation } from "@/redux/fetchers/auth/authApi";
 import { logout } from "@/redux/fetchers/auth/authSlice";
 import { useAppDispatch } from "@/redux/store";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface Props {
   lang: string;
@@ -71,7 +72,9 @@ export default function SalesSidebar({ lang, t, user }: Props) {
           <Link href={`/${lang}`} className="sidebar__logo"><Logo light /></Link>
         </div>
         <div className="sidebar__user">
-          <div className="sidebar__avatar">{(user.name ?? user.email)[0].toUpperCase()}</div>
+          <Avatar className="sidebar__avatar">
+            <AvatarFallback>{(user.name ?? user.email)[0].toUpperCase()}</AvatarFallback>
+          </Avatar>
           <div className="sidebar__userinfo">
             <p className="sidebar__username">{user.name ?? user.email}</p>
             <span className="sidebar__role-badge sidebar__role-badge--sales">SALES</span>

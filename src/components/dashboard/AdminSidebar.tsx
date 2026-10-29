@@ -10,10 +10,10 @@ import {
 } from "lucide-react";
 import type { Dict } from "@/lib/i18n";
 import type { JwtUser } from "@/lib/server-auth";
-import Logo from "@/components/Logo";
 import { useLogoutFromDbMutation } from "@/redux/fetchers/auth/authApi";
 import { logout } from "@/redux/fetchers/auth/authSlice";
 import { useAppDispatch } from "@/redux/store";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface Props {
   lang: string;
@@ -45,6 +45,16 @@ export default function AdminSidebar({ lang, t, user }: Props) {
   const isActive = (href: string, exact = false) =>
     exact ? pathname === href : pathname.startsWith(href) && (exact || href !== base || pathname === base);
 
+  const brand = (
+    <span className="sidebar__brand">
+      <span className="sidebar__brand-mark">CS</span>
+      <span className="sidebar__brand-text">
+        CYBERSPACE
+        <small>Admin Panel</small>
+      </span>
+    </span>
+  );
+
   async function handleLogout() {
     await logoutFromDb().unwrap().catch(() => {});
     dispatch(logout());
@@ -72,24 +82,15 @@ export default function AdminSidebar({ lang, t, user }: Props) {
         <button className="sidebar__hamburger" onClick={() => setMobileOpen(true)} aria-label="Open menu">
           <Menu size={22} />
         </button>
-        <Link href={`/${lang}`} className="dash-topbar__logo"><Logo light /></Link>
-        <div className="dash-topbar__user">
-          <span className="sidebar__role-badge sidebar__role-badge--admin">ADMIN</span>
-        </div>
+        <Link href={`/${lang}`} className="dash-topbar__logo">{brand}</Link>
       </div>
 
       {/* Desktop sidebar */}
       <aside className="sidebar" aria-label="Admin panel">
         <div className="sidebar__header">
-          <Link href={`/${lang}`} className="sidebar__logo"><Logo light /></Link>
+          <Link href={`/${lang}`} className="sidebar__logo">{brand}</Link>
         </div>
-        <div className="sidebar__user">
-          <div className="sidebar__avatar">{(user.name ?? user.email)[0].toUpperCase()}</div>
-          <div className="sidebar__userinfo">
-            <p className="sidebar__username">{user.name ?? user.email}</p>
-            <span className="sidebar__role-badge sidebar__role-badge--admin">ADMIN</span>
-          </div>
-        </div>
+        
         {nav}
         <div className="sidebar__footer">
           <Link href={`/${lang}`} className="sidebar__link sidebar__link--secondary">
@@ -109,13 +110,15 @@ export default function AdminSidebar({ lang, t, user }: Props) {
       )}
       <aside className={`sidebar sidebar--mobile${mobileOpen ? " is-open" : ""}`} aria-label="Admin navigation mobile">
         <div className="sidebar__header">
-          <Link href={`/${lang}`} className="sidebar__logo" onClick={() => setMobileOpen(false)}><Logo light /></Link>
+          <Link href={`/${lang}`} className="sidebar__logo" onClick={() => setMobileOpen(false)}>{brand}</Link>
           <button className="sidebar__close" onClick={() => setMobileOpen(false)} aria-label="Close menu">
             <X size={20} />
           </button>
         </div>
         <div className="sidebar__user">
-          <div className="sidebar__avatar">{(user.name ?? user.email)[0].toUpperCase()}</div>
+          <Avatar className="sidebar__avatar">
+            <AvatarFallback>{(user.name ?? user.email)[0].toUpperCase()}</AvatarFallback>
+          </Avatar>
           <div className="sidebar__userinfo">
             <p className="sidebar__username">{user.name ?? user.email}</p>
             <span className="sidebar__role-badge sidebar__role-badge--admin">ADMIN</span>

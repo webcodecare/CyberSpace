@@ -181,9 +181,11 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
         </div>
         {recent.length === 0 ? (
           <div className="dash-empty">
-            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <div className="dash-empty__icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
             <p>{t.dash.noData}</p>
-            <Link href={`${base}/inquiries`} className="btn btn--ghost btn--sm" style={{ textDecoration: "none" }}>Go to Inquiries</Link>
+            <Link href={`${base}/inquiries`} className="btn btn--ghost btn--sm dash-empty__cta" style={{ textDecoration: "none" }}>Go to Inquiries</Link>
           </div>
         ) : (
           <div className="dash-table-wrap">
