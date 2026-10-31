@@ -10,7 +10,7 @@ import Logo from "./Logo";
 import { useAuthUser } from "@/redux/fetchers/auth/authSlice";
 
 const NAV = [
-  ["home", ""], ["about", "/about"], ["products", "/shop"], ["solutions", "/solutions"], ["services", "/services"],
+  ["home", ""], ["about", "/about"], ["products", "/shop"], ["solutions", "/solutions"],
   ["partners", "/partners"], ["news", "/news"], ["careers", "/careers"], ["contact", "/contact"],
 ] as const;
 

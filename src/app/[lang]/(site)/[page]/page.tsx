@@ -8,7 +8,7 @@ import { FadeDown, FadeLeft, FadeRight, FadeUp, ZoomIn } from "@/components/Moti
 
 export const dynamic = "force-dynamic";
 
-const PAGES = ["about", "solutions", "services", "partners", "careers", "contact"] as const;
+const PAGES = ["about", "solutions", "partners", "careers", "contact"] as const;
 type PageKey = (typeof PAGES)[number];
 
 const MIGRATE: Record<Locale, string> = {
@@ -185,75 +185,6 @@ const INDUSTRIES = [
   { icon: "🏗️", name: { en: "Construction",       az: "İnşaat",         ru: "Строительство" } },
 ];
 
-const SERVICES = [
-  {
-    step: "01",
-    icon: (
-      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-      </svg>
-    ),
-    title:   { en: "Installation & Deployment",   az: "Quraşdırma və Yerləşdirmə",    ru: "Установка и развёртывание" },
-    desc:    { en: "From unboxing to production-ready. Our certified engineers handle site surveys, cabling, rack build-out, configuration and handover testing.", az: "Qutunu açmaqdan istehsala hazır hala qədər. Sertifikatlı mühəndislərimiz sahə tədqiqatlarını, kabeli, stend qurluşunu, konfiqurasiyanı və təhvil testlərini həyata keçirir.", ru: "От распаковки до ввода в эксплуатацию. Наши сертифицированные инженеры проводят обследование объекта, прокладку кабелей, монтаж стойки, настройку и приёмо-сдаточные испытания." },
-    bullets: { en: ["On-site delivery & unpacking", "Physical installation and cabling", "Initial configuration and testing", "User handover and documentation"], az: ["Saytda çatdırılma və qutunu açma", "Fiziki quraşdırma və kabeli", "İlkin konfiqurasiya və sınaq", "İstifadəçiyə təhvil və sənədləşdirmə"], ru: ["Доставка и распаковка на объекте", "Физическая установка и кабельная разводка", "Начальная настройка и тестирование", "Передача пользователю и документирование"] },
-  },
-  {
-    step: "02",
-    icon: (
-      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 6.29 6.29l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-      </svg>
-    ),
-    title:   { en: "Technical Support",        az: "Texniki Dəstək",              ru: "Техническая поддержка" },
-    desc:    { en: "Keep systems running at peak performance with flexible support contracts. Choose the level that matches your business hours and criticality.", az: "Çevik dəstək müqavilələri ilə sistemləri zirvə performansında işlək saxlayın. İş saatlarınıza və kritikliyinizə uyğun səviyyəni seçin.", ru: "Поддерживайте пиковую производительность систем с гибкими контрактами поддержки. Выберите уровень, соответствующий рабочим часам и критичности." },
-    bullets: { en: ["9×5 business-hours support", "12×5 extended coverage", "24×7 round-the-clock plans", "Spare parts and advance replacement"], az: ["9×5 iş saatları dəstəyi", "12×5 genişləndirilmiş əhatə", "24×7 gecə-gündüz planları", "Ehtiyat hissələri və qabaqcadan əvəzetmə"], ru: ["Поддержка в рабочее время 9×5", "Расширенное покрытие 12×5", "Планы 24×7", "Запасные части и предварительная замена"] },
-  },
-  {
-    step: "03",
-    icon: (
-      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
-      </svg>
-    ),
-    title:   { en: "IT Consulting & Planning",  az: "IT Konsaltinq və Planlaşdırma", ru: "IT-консалтинг и планирование" },
-    desc:    { en: "Before you invest, talk to our architects. We assess your current environment, identify gaps and produce a technology roadmap aligned to your budget.", az: "İnvestisiya etməzdən əvvəl memarlarımızla danışın. Biz mövcud mühitinizi qiymətləndirir, boşluqları müəyyənləşdirir və büdcənizə uyğun texnologiya yol xəritəsi hazırlayırıq.", ru: "Прежде чем вкладывать средства, проконсультируйтесь с нашими архитекторами. Мы оцениваем текущую среду, выявляем пробелы и создаём технологическую дорожную карту." },
-    bullets: { en: ["Current state assessment", "Technology roadmap creation", "Vendor-neutral bill of materials", "Budget and TCO analysis"], az: ["Mövcud vəziyyətin qiymətləndirilməsi", "Texnologiya yol xəritəsinin yaradılması", "Satıcıdan asılı olmayan materiallar siyahısı", "Büdcə və TCO təhlili"], ru: ["Оценка текущего состояния", "Создание технологической дорожной карты", "Нейтральный список материалов", "Анализ бюджета и TCO"] },
-  },
-  {
-    step: "04",
-    icon: (
-      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-      </svg>
-    ),
-    title:   { en: "Training & Certification",  az: "Təlim və Sertifikasiya",       ru: "Обучение и сертификация" },
-    desc:    { en: "Empower your IT team with hands-on training delivered by our engineers. We cover product-specific topics from basic administration to advanced deployment.", az: "IT komandanıza mühəndislərimizin əməli təlimlərini verin. Biz əsas idarəetmədən qabaqcıl yerləşdirməyə qədər məhsula spesifik mövzuları əhatə edirik.", ru: "Расширьте возможности вашей IT-команды с помощью практического обучения от наших инженеров. Охватываем темы от базового администрирования до расширенного развёртывания." },
-    bullets: { en: ["Server and storage administration", "Network configuration and troubleshooting", "Security fundamentals and firewall management", "Vendor certification preparation"], az: ["Server və yaddaş idarəetməsi", "Şəbəkə konfiqurasiyası və problemin aradan qaldırılması", "Təhlükəsizlik əsasları və firewall idarəetməsi", "Satıcı sertifikasiyasına hazırlıq"], ru: ["Администрирование серверов и СХД", "Настройка и устранение неполадок в сети", "Основы безопасности и управление межсетевым экраном", "Подготовка к сертификации вендора"] },
-  },
-];
-
-const SVC_TIERS = [
-  {
-    name:  { en: "Basic",      az: "Əsas",      ru: "Базовый" },
-    hours: "9×5",
-    items: { en: ["Business hours support", "Email & phone helpdesk", "Next business day response", "Remote diagnosis"], az: ["İş saatları dəstəyi", "E-poçt və telefon yardım masası", "Növbəti iş günü cavab", "Uzaqdan diaqnostika"], ru: ["Поддержка в рабочее время", "Email и телефонный helpdesk", "Ответ на следующий рабочий день", "Удалённая диагностика"] },
-    featured: false,
-  },
-  {
-    name:  { en: "Standard",   az: "Standart",  ru: "Стандартный" },
-    hours: "12×5",
-    badge: { en: "Most Popular", az: "Ən Populyar", ru: "Популярный" },
-    items: { en: ["Extended hours support", "Priority ticket queue", "4-hour response SLA", "On-site engineer dispatch", "Spare parts stocking"], az: ["Genişləndirilmiş saatlar dəstəyi", "Prioritet bilet növbəsi", "4 saatlıq cavab SLA", "Saytda mühəndis göndərməsi", "Ehtiyat hissələri saxlanması"], ru: ["Расширенная поддержка", "Приоритетная очередь заявок", "SLA ответа 4 часа", "Выезд инженера на объект", "Хранение запасных частей"] },
-    featured: true,
-  },
-  {
-    name:  { en: "Enterprise",  az: "Korporativ", ru: "Корпоративный" },
-    hours: "24×7",
-    items: { en: ["Round-the-clock coverage", "1-hour critical SLA", "Dedicated account engineer", "Advance hardware replacement", "Monthly health reports"], az: ["Gecə-gündüz əhatə", "1 saatlıq kritik SLA", "Xüsusi hesab mühəndisi", "Qabaqcadan hardware dəyişdirmə", "Aylıq sağlamlıq hesabatları"], ru: ["Круглосуточное покрытие", "Критический SLA 1 час", "Выделенный инженер", "Предварительная замена оборудования", "Ежемесячные отчёты"] },
-    featured: false,
-  },
-];
-
 const PARTNER_TIERS: Record<string, { tier: { en: string; az: string; ru: string }; level: "gold" | "silver" | "auth" }> = {
   "Dell Technologies": { tier: { en: "Gold Partner",      az: "Gold Tərəfdaş",     ru: "Золотой партнёр" },    level: "gold" },
   "HPE":               { tier: { en: "Platinum Partner",  az: "Platinum Tərəfdaş", ru: "Платиновый партнёр" }, level: "gold" },
@@ -381,6 +312,7 @@ const FAQS = [
 export default async function InfoPage({ params }: { params: Promise<{ lang: string; page: string }> }) {
   const { lang, page } = await params;
   if (page === "news") redirect(`/${lang}/news`);
+  if (page === "services") redirect(`/${lang}`);
   if (!isLocale(lang) || !PAGES.includes(page as PageKey)) notFound();
   const t = getDict(lang);
   const key = page as PageKey;
@@ -527,76 +459,6 @@ export default async function InfoPage({ params }: { params: Promise<{ lang: str
           </section>
 
           <FadeUp className="container" style={{ marginBottom: "56px" }}>
-            <p className="notice">{MIGRATE[L]}</p>
-          </FadeUp>
-        </div>
-      )}
-
-      {/* ═══════════ SERVICES ═══════════ */}
-      {key === "services" && (
-        <div className="info-body">
-          <section className="container section">
-            <FadeUp className="info-section-head">
-              <p className="eyebrow cats-eyebrow">{ { en: "How we help", az: "Necə kömək edirik", ru: "Как мы помогаем" }[L] }</p>
-              <h2>{ { en: "Professional Services", az: "Peşəkar Xidmətlər", ru: "Профессиональные услуги" }[L] }</h2>
-              <p className="info-lead">{ { en: "We don't just sell hardware — we plan, install and support it for the long term.", az: "Biz sadəcə hardware satmırıq — uzunmüddətli olaraq planlaşdırır, quraşdırır və dəstəkləyirik.", ru: "Мы не просто продаём оборудование — мы его планируем, устанавливаем и поддерживаем долгосрочно." }[L] }</p>
-            </FadeUp>
-            <div className="svc-grid">
-              {SERVICES.map((s, i) => (
-                <FadeUp key={i} delay={i * 0.07} className="svc-card">
-                  <div className="svc-card__head">
-                    <div className="svc-card__icon">{s.icon}</div>
-                    <span className="svc-card__step">{s.step}</span>
-                  </div>
-                  <h3 className="svc-card__title">{s.title[L]}</h3>
-                  <p className="svc-card__desc">{s.desc[L]}</p>
-                  <ul className="svc-card__list">
-                    {s.bullets[L].map((b) => <li key={b}>{b}</li>)}
-                  </ul>
-                </FadeUp>
-              ))}
-            </div>
-          </section>
-
-          <section className="info-alt-section">
-            <div className="container">
-              <FadeUp className="info-section-head">
-                <p className="eyebrow cats-eyebrow">{ { en: "Support plans", az: "Dəstək planları", ru: "Планы поддержки" }[L] }</p>
-                <h2>{ { en: "Choose Your Coverage Level", az: "Əhatə Səviyyənizi Seçin", ru: "Выберите уровень покрытия" }[L] }</h2>
-              </FadeUp>
-              <div className="svc-tiers">
-                {SVC_TIERS.map((tier, i) => (
-                  <FadeUp key={i} delay={i * 0.08} className={`svc-tier${tier.featured ? " svc-tier--featured" : ""}`}>
-                    {tier.featured && tier.badge && (
-                      <span className="svc-tier__badge">{tier.badge[L]}</span>
-                    )}
-                    <p className="svc-tier__name">{tier.name[L]}</p>
-                    <p className="svc-tier__hours">{tier.hours}</p>
-                    <ul className="svc-tier__list">
-                      {tier.items[L].map((item) => <li key={item}>{item}</li>)}
-                    </ul>
-                    <Link href={`/${lang}/contact`} className={`btn${tier.featured ? " btn--primary" : " btn--outline"}`}>
-                      { { en: "Get a quote", az: "Qiymət al", ru: "Получить цену" }[L] }
-                    </Link>
-                  </FadeUp>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          <section className="info-cta-band">
-            <FadeUp className="container info-cta-band__inner">
-              <div>
-                <h2>{ { en: "Ready to get started?", az: "Başlamağa hazırsınız?", ru: "Готовы начать?" }[L] }</h2>
-                <p>{ { en: "Contact our team to discuss your requirements.", az: "Tələblərinizi müzakirə etmək üçün komandamızla əlaqə saxlayın.", ru: "Свяжитесь с нашей командой для обсуждения ваших задач." }[L] }</p>
-              </div>
-              <Link href={`/${lang}/contact`} className="btn btn--primary btn--lg">
-                { { en: "Contact Us", az: "Bizimlə əlaqə", ru: "Связаться с нами" }[L] }
-              </Link>
-            </FadeUp>
-          </section>
-
-          <FadeUp className="container" style={{ paddingTop: "40px", paddingBottom: "56px" }}>
             <p className="notice">{MIGRATE[L]}</p>
           </FadeUp>
         </div>
@@ -783,7 +645,7 @@ export default async function InfoPage({ params }: { params: Promise<{ lang: str
       )}
 
       {/* ═══════════ OTHER PAGES (fallback) ═══════════ */}
-      {!["about","solutions","services","partners","careers","contact"].includes(key) && (
+      {!["about","solutions","partners","careers","contact"].includes(key) && (
         <div className="container section info">
           <p className="notice">{MIGRATE[L]}</p>
         </div>

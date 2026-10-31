@@ -7,7 +7,7 @@ export function isLocale(v: string): v is Locale {
 }
 
 export type Dict = {
-  nav: Record<"home" | "about" | "products" | "solutions" | "services" | "partners" | "news" | "careers" | "contact" | "shop" | "admin" | "login" | "dashboard", string>;
+  nav: Record<"home" | "about" | "products" | "solutions" | "partners" | "news" | "careers" | "contact" | "shop" | "admin" | "login" | "dashboard", string>;
   common: Record<string, string>;
   home: Record<string, string>;
   shop: Record<string, string>;
@@ -21,7 +21,7 @@ export type Dict = {
 
 const en: Dict = {
   nav: {
-    home: "Home", about: "About Us", products: "Products", solutions: "Solutions", services: "Services",
+    home: "Home", about: "About Us", products: "Products", solutions: "Solutions",
     partners: "Partners", news: "News", careers: "Careers", contact: "Contact", shop: "Shop", admin: "Admin", login: "Login", dashboard: "Dashboard",
   },
   common: {
@@ -183,7 +183,7 @@ const en: Dict = {
 
 const az: Dict = {
   nav: {
-    home: "Ana səhifə", about: "Haqqımızda", products: "Məhsullar", solutions: "Həllər", services: "Xidmətlər",
+    home: "Ana səhifə", about: "Haqqımızda", products: "Məhsullar", solutions: "Həllər",
     partners: "Tərəfdaşlar", news: "Xəbərlər", careers: "Karyera", contact: "Əlaqə", shop: "Mağaza", admin: "Admin", login: "Daxil ol", dashboard: "Panel",
   },
   common: {
@@ -345,7 +345,7 @@ const az: Dict = {
 
 const ru: Dict = {
   nav: {
-    home: "Главная", about: "О нас", products: "Продукты", solutions: "Решения", services: "Услуги",
+    home: "Главная", about: "О нас", products: "Продукты", solutions: "Решения",
     partners: "Партнёры", news: "Новости", careers: "Карьера", contact: "Контакты", shop: "Магазин", admin: "Админ", login: "Войти", dashboard: "Панель",
   },
   common: {

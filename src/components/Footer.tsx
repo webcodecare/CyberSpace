@@ -16,7 +16,6 @@ export default function Footer({ lang }: { lang: Locale }) {
           <ul className="footer__list">
             <li><Link href={`/${lang}/shop`}>{t.nav.shop}</Link></li>
             <li><Link href={`/${lang}/about`}>{t.nav.about}</Link></li>
-            <li><Link href={`/${lang}/services`}>{t.nav.services}</Link></li>
             <li><Link href={`/${lang}/contact`}>{t.nav.contact}</Link></li>
           </ul>
         </div>
