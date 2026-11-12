@@ -4,11 +4,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getDict, isLocale } from "@/lib/i18n";
 import { pageMeta } from "@/lib/seo";
-import { BACKEND_URL } from "@/lib/server-auth";
+import { CACHE_TAGS, serverGet } from "@/lib/server-api";
 import { formatDay } from "@/lib/format";
 import { FadeUp, FadeDown } from "@/components/Motion";
-
-export const dynamic = "force-dynamic";
 
 interface NewsItem {
   id: number;
@@ -18,18 +16,13 @@ interface NewsItem {
   translations: { lang: string; title: string; excerpt: string | null }[];
 }
 
-async function fetchPublishedNews(): Promise<NewsItem[]> {
-  try {
-    const res = await fetch(`${BACKEND_URL}/news/published`, { cache: "no-store" });
-    if (!res.ok) return [];
-    const json = await res.json();
-    return json.data ?? [];
-  } catch {
-    return [];
-  }
-}
+const fetchPublishedNews = () => serverGet<NewsItem[]>("/news/published", [], [CACHE_TAGS.news]);
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
   const { lang } = await params;
   if (!isLocale(lang)) return {};
   const t = getDict(lang);
@@ -43,7 +36,9 @@ export default async function NewsListPage({ params }: { params: Promise<{ lang:
   const L = lang.toUpperCase();
   const items = await fetchPublishedNews();
 
-  const readMoreLabel = { en: "Read more →", az: "Daha çox oxu →", ru: "Читать далее →" }[lang as "en" | "az" | "ru"] ?? "Read more →";
+  const readMoreLabel =
+    { en: "Read more →", az: "Daha çox oxu →", ru: "Читать далее →" }[lang as "en" | "az" | "ru"] ??
+    "Read more →";
 
   return (
     <>

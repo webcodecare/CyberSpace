@@ -25,11 +25,6 @@ export const partnerApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.partner],
       transformResponse: (res: { data?: Partner[] }) => res.data ?? [],
     }),
-    getActivePartners: builder.query<Partner[], void>({
-      query: () => "/partners/active",
-      providesTags: [tagTypes.partner],
-      transformResponse: (res: { data?: Partner[] }) => res.data ?? [],
-    }),
     createPartner: builder.mutation<Partner, CreatePartnerInput>({
       query: (body) => ({ url: "/partners", method: "POST", body }),
       invalidatesTags: [tagTypes.partner],
@@ -49,7 +44,6 @@ export const partnerApi = baseApi.injectEndpoints({
 
 export const {
   useGetPartnersQuery,
-  useGetActivePartnersQuery,
   useCreatePartnerMutation,
   useUpdatePartnerMutation,
   useDeletePartnerMutation,

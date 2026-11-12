@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthToken, BACKEND_URL } from "@/lib/server-auth";
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const token = await getAuthToken();
   if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { id } = await params;

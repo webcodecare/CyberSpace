@@ -8,7 +8,11 @@ import { getDict, isLocale } from "@/lib/i18n";
 import { pageMeta } from "@/lib/seo";
 import { FadeDown, FadeUp } from "@/components/Motion";
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
   const { lang } = await params;
   if (!isLocale(lang)) return {};
   const t = getDict(lang);
@@ -24,13 +28,25 @@ export default async function ShopPage({ params }: { params: Promise<{ lang: str
       <section className="pagehero">
         <div className="container">
           <nav className="crumbs crumbs--light" aria-label="Breadcrumb">
-            <Link href={`/${lang}`}>{t.nav.home}</Link><span>/</span><span>{t.shop.title}</span>
+            <Link href={`/${lang}`}>{t.nav.home}</Link>
+            <span>/</span>
+            <span>{t.shop.title}</span>
           </nav>
-          <FadeDown><h1>{t.shop.title}</h1></FadeDown>
-          <FadeUp delay={0.06}><p>{t.shop.subtitle}</p></FadeUp>
+          <FadeDown>
+            <h1>{t.shop.title}</h1>
+          </FadeDown>
+          <FadeUp delay={0.06}>
+            <p>{t.shop.subtitle}</p>
+          </FadeUp>
         </div>
       </section>
-      <Suspense fallback={<div className="container section"><ProductGridSkeleton /></div>}>
+      <Suspense
+        fallback={
+          <div className="container section">
+            <ProductGridSkeleton />
+          </div>
+        }
+      >
         <ShopClient />
       </Suspense>
     </>

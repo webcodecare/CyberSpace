@@ -65,14 +65,7 @@ export const productApi = baseApi.injectEndpoints({
     getProducts: builder.query<PublicProduct[], void>({
       query: () => "/products",
       providesTags: [tagTypes.product],
-      transformResponse: (res: { data?: ApiProduct[] }) =>
-        (res.data ?? []).map(toPublicProduct),
-    }),
-    getProduct: builder.query<PublicProduct | null, string>({
-      query: (id) => `/products/${encodeURIComponent(id)}`,
-      providesTags: [tagTypes.product],
-      transformResponse: (res: { data?: ApiProduct }) =>
-        res.data ? toPublicProduct(res.data) : null,
+      transformResponse: (res: { data?: ApiProduct[] }) => (res.data ?? []).map(toPublicProduct),
     }),
     createProduct: builder.mutation<ApiProduct, CreateProductInput>({
       query: (body) => ({ url: "/products", method: "POST", body }),
@@ -80,7 +73,11 @@ export const productApi = baseApi.injectEndpoints({
       transformResponse: (res: { data?: ApiProduct }) => res.data!,
     }),
     updateProduct: builder.mutation<ApiProduct, { id: string; body: UpdateProductInput }>({
-      query: ({ id, body }) => ({ url: `/products/${encodeURIComponent(id)}`, method: "PATCH", body }),
+      query: ({ id, body }) => ({
+        url: `/products/${encodeURIComponent(id)}`,
+        method: "PATCH",
+        body,
+      }),
       invalidatesTags: [tagTypes.product],
       transformResponse: (res: { data?: ApiProduct }) => res.data!,
     }),
@@ -93,7 +90,6 @@ export const productApi = baseApi.injectEndpoints({
 
 export const {
   useGetProductsQuery,
-  useGetProductQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,

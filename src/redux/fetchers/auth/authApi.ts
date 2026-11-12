@@ -14,7 +14,10 @@ export const authApi = baseApi.injectEndpoints({
         if (user) dispatch(setUser({ user }));
       },
     }),
-    login: builder.mutation<{ success: boolean; data: DecodedUser }, { email: string; password: string }>({
+    login: builder.mutation<
+      { success: boolean; data: DecodedUser },
+      { email: string; password: string }
+    >({
       query: (body) => ({ url: "/auth/login", method: "POST", body }),
       invalidatesTags: [tagTypes.user],
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
@@ -22,7 +25,10 @@ export const authApi = baseApi.injectEndpoints({
         if (res) dispatch(setUser({ user: res.data }));
       },
     }),
-    register: builder.mutation<{ success: boolean; data: DecodedUser }, { name: string; email: string; password: string }>({
+    register: builder.mutation<
+      { success: boolean; data: DecodedUser },
+      { name: string; email: string; password: string }
+    >({
       query: (body) => ({ url: "/auth/register", method: "POST", body }),
       invalidatesTags: [tagTypes.user],
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
@@ -34,7 +40,10 @@ export const authApi = baseApi.injectEndpoints({
       query: () => ({ url: "/auth/logout", method: "POST" }),
       invalidatesTags: [tagTypes.user],
     }),
-    changePassword: builder.mutation<{ success: boolean }, { old_password: string; new_password: string }>({
+    changePassword: builder.mutation<
+      { success: boolean },
+      { old_password: string; new_password: string }
+    >({
       query: (body) => ({ url: "/user/change-password", method: "PATCH", body }),
     }),
   }),

@@ -20,7 +20,9 @@ export default function ProductCardSkeleton() {
 export function ProductGridSkeleton({ count = 8 }: { count?: number }) {
   return (
     <div className="pgrid">
-      {Array.from({ length: count }).map((_, i) => <ProductCardSkeleton key={i} />)}
+      {Array.from({ length: count }).map((_, i) => (
+        <ProductCardSkeleton key={i} />
+      ))}
     </div>
   );
 }

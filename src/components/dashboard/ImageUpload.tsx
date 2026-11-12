@@ -69,10 +69,13 @@ export default function ImageUpload({
       const file = e.dataTransfer.files?.[0];
       if (file) uploadFile(file);
     },
-    [disabled, uploading]
+    [disabled, uploading],
   );
 
-  const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); setIsDragging(true); };
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
   const handleDragLeave = () => setIsDragging(false);
 
   const hasImage = Boolean(value);
@@ -90,7 +93,10 @@ export default function ImageUpload({
             <button
               type="button"
               className="img-preview__remove"
-              onClick={() => { onChange(""); setUploadError(""); }}
+              onClick={() => {
+                onChange("");
+                setUploadError("");
+              }}
               disabled={disabled || uploading}
               aria-label="Remove image"
             >
@@ -127,17 +133,30 @@ export default function ImageUpload({
               </>
             ) : (
               <>
-                <svg className="img-upload__icon" viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                  <circle cx="8.5" cy="8.5" r="1.5"/>
-                  <polyline points="21 15 16 10 5 21"/>
+                <svg
+                  className="img-upload__icon"
+                  viewBox="0 0 24 24"
+                  width="32"
+                  height="32"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
                 </svg>
                 <span className="img-upload__label">Click or drag to upload</span>
                 <span className="img-upload__hint">{hint}</span>
               </>
             )}
           </div>
-          {uploading && <div className="img-upload-progress"><div className="img-upload-progress__bar" /></div>}
+          {uploading && (
+            <div className="img-upload-progress">
+              <div className="img-upload-progress__bar" />
+            </div>
+          )}
         </div>
       )}
 
@@ -150,7 +169,11 @@ export default function ImageUpload({
         disabled={disabled || uploading}
       />
 
-      {uploadError && <p className="err" role="alert">{uploadError}</p>}
+      {uploadError && (
+        <p className="err" role="alert">
+          {uploadError}
+        </p>
+      )}
 
       {showUrlInput && (
         <div className="img-dual" style={{ marginTop: 8 }}>

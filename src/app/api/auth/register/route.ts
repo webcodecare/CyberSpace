@@ -12,7 +12,10 @@ export async function POST(req: NextRequest) {
     });
     const data = await res.json();
     if (!res.ok) {
-      return NextResponse.json({ error: data.message || "Registration failed" }, { status: res.status });
+      return NextResponse.json(
+        { error: data.message || "Registration failed" },
+        { status: res.status },
+      );
     }
     const { access_token } = data.data;
     const user = JwtDecode(access_token);

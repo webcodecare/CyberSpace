@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthToken, BACKEND_URL } from "@/lib/server-auth";
+import { CACHE_TAGS, revalidateIfOk } from "@/lib/server-api";
 
 export async function GET() {
   try {
@@ -20,5 +21,6 @@ export async function PATCH(req: NextRequest) {
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify(body),
   });
+  revalidateIfOk(res, CACHE_TAGS.career);
   return NextResponse.json(await res.json(), { status: res.status });
 }

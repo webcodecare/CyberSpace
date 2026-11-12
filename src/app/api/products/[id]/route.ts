@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthToken, BACKEND_URL } from "@/lib/server-auth";
+import { CACHE_TAGS, revalidateIfOk } from "@/lib/server-api";
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   try {
-    const res = await fetch(`${BACKEND_URL}/products/${encodeURIComponent(id)}`, { cache: "no-store" });
+    const res = await fetch(`${BACKEND_URL}/products/${encodeURIComponent(id)}`, {
+      cache: "no-store",
+    });
     if (!res.ok) return NextResponse.json({ data: null }, { status: res.status });
     return NextResponse.json(await res.json());
   } catch {
@@ -15,10 +15,7 @@ export async function GET(
   }
 }
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const token = await getAuthToken();
   if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -28,13 +25,11 @@ export async function PATCH(
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify(body),
   });
+  revalidateIfOk(res, CACHE_TAGS.products);
   return NextResponse.json(await res.json(), { status: res.status });
 }
 
-export async function DELETE(
-  _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const token = await getAuthToken();
   if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -42,6 +37,7 @@ export async function DELETE(
     method: "DELETE",
     headers: { Authorization: `Bearer ${token}` },
   });
+  revalidateIfOk(res, CACHE_TAGS.products);
   if (res.status === 204) return new NextResponse(null, { status: 204 });
   return NextResponse.json(await res.json(), { status: res.status });
 }

@@ -11,7 +11,11 @@ export function generateStaticParams() {
   return LOCALES.map((lang) => ({ lang }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
   const { lang } = await params;
   if (!isLocale(lang)) return {};
   const t = getDict(lang);
@@ -31,5 +35,10 @@ export default async function LangLayout({
 }) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
-  return <StoreProvider>{children}<Toaster /></StoreProvider>;
+  return (
+    <StoreProvider>
+      {children}
+      <Toaster />
+    </StoreProvider>
+  );
 }

@@ -5,7 +5,10 @@ import { useGetUserInquiriesQuery } from "@/redux/fetchers/inquiry/inquiryApi";
 import { formatDate } from "@/lib/format";
 import type { Dict, Locale } from "@/lib/i18n";
 
-function getProductName(inq: { product?: { translations?: { lang: string; name: string }[] } }, lang: string) {
+function getProductName(
+  inq: { product?: { translations?: { lang: string; name: string }[] } },
+  lang: string,
+) {
   const trans = inq.product?.translations?.find((x) => x.lang === lang.toUpperCase());
   return trans?.name ?? "—";
 }
@@ -33,15 +36,33 @@ export default function SalesInquiriesClient({ lang, t }: { lang: string; t: Dic
       {isLoading ? (
         <div className="dash-table-wrap">
           <table className="dash-table">
-            <thead><tr><th>#</th><th>{t.dash.product}</th><th>{t.dash.date}</th><th>{t.dash.status}</th><th>{t.inquiry.message}</th></tr></thead>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>{t.dash.product}</th>
+                <th>{t.dash.date}</th>
+                <th>{t.dash.status}</th>
+                <th>{t.inquiry.message}</th>
+              </tr>
+            </thead>
             <tbody>
               {Array.from({ length: 4 }).map((_, i) => (
                 <tr key={i}>
-                  <td><span className="skel skel--sm" style={{ width: 24 }} /></td>
-                  <td><span className="skel skel--md" /></td>
-                  <td><span className="skel skel--sm" /></td>
-                  <td><span className="skel skel--badge" /></td>
-                  <td><span className="skel skel--md" /></td>
+                  <td>
+                    <span className="skel skel--sm" style={{ width: 24 }} />
+                  </td>
+                  <td>
+                    <span className="skel skel--md" />
+                  </td>
+                  <td>
+                    <span className="skel skel--sm" />
+                  </td>
+                  <td>
+                    <span className="skel skel--badge" />
+                  </td>
+                  <td>
+                    <span className="skel skel--md" />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -49,8 +70,16 @@ export default function SalesInquiriesClient({ lang, t }: { lang: string; t: Dic
         </div>
       ) : inquiries.length === 0 ? (
         <div className="dash-empty">
-          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          <svg
+            viewBox="0 0 24 24"
+            width="40"
+            height="40"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          >
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
           </svg>
           <p>{t.dash.noInquiries}</p>
           <Link href={`/${lang}/dashboard/sales/products`} className="btn btn--primary btn--sm">
@@ -76,7 +105,9 @@ export default function SalesInquiriesClient({ lang, t }: { lang: string; t: Dic
                   <td>{getProductName(inq, lang)}</td>
                   <td>{formatDate(inq.createdAt, lang as Locale)}</td>
                   <td>
-                    <span className={`status-badge status-badge--${inq.status.toLowerCase().replace("_", "-")}`}>
+                    <span
+                      className={`status-badge status-badge--${inq.status.toLowerCase().replace("_", "-")}`}
+                    >
                       {statusLabel(inq.status)}
                     </span>
                   </td>

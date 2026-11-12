@@ -20,9 +20,9 @@ const overlayStyle: React.CSSProperties = {
 };
 
 function getMaxWidth(size?: "sm" | "default" | "wide" | "xl") {
-  if (size === "xl")   return 940;
+  if (size === "xl") return 940;
   if (size === "wide") return 720;
-  if (size === "sm")   return 420;
+  if (size === "sm") return 420;
   return 540;
 }
 
@@ -157,23 +157,22 @@ DialogFooter.displayName = "DialogFooter";
 // Wraps a <form> so it participates correctly in the flex-column layout of
 // DialogContent (flex: 1 1 auto + min-height: 0 are required for the
 // DialogBody's overflow-y: auto to actually activate).
-const DialogForm = React.forwardRef<
-  HTMLFormElement,
-  React.FormHTMLAttributes<HTMLFormElement>
->(({ style, ...props }, ref) => (
-  <form
-    ref={ref}
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      flex: "1 1 auto",
-      minHeight: 0,
-      overflow: "hidden",
-      ...style,
-    }}
-    {...props}
-  />
-));
+const DialogForm = React.forwardRef<HTMLFormElement, React.FormHTMLAttributes<HTMLFormElement>>(
+  ({ style, ...props }, ref) => (
+    <form
+      ref={ref}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        flex: "1 1 auto",
+        minHeight: 0,
+        overflow: "hidden",
+        ...style,
+      }}
+      {...props}
+    />
+  ),
+);
 DialogForm.displayName = "DialogForm";
 
 export {

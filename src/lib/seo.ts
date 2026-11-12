@@ -11,6 +11,13 @@ export function pageMeta(lang: Locale, path: string, title: string, description:
     title,
     description,
     alternates: { canonical: `/${lang}${path}`, languages },
-    openGraph: { title, description, url: `/${lang}${path}`, siteName: "Cyberspace", locale: lang, type: "website" },
+    openGraph: {
+      title,
+      description,
+      url: `/${lang}${path}`,
+      siteName: "Cyberspace",
+      locale: lang,
+      type: "website",
+    },
   };
 }

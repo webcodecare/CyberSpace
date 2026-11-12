@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthToken, BACKEND_URL } from "@/lib/server-auth";
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const token = await getAuthToken();
   if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { id } = await params;
   const body = await req.json();
-  const endpoint = body.role !== undefined ? `${BACKEND_URL}/user/${id}/role` : `${BACKEND_URL}/user/${id}/toggle-active`;
+  const endpoint =
+    body.role !== undefined
+      ? `${BACKEND_URL}/user/${id}/role`
+      : `${BACKEND_URL}/user/${id}/toggle-active`;
   const res = await fetch(endpoint, {
     method: "PATCH",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -20,10 +20,7 @@ export async function PATCH(
   return NextResponse.json(data);
 }
 
-export async function DELETE(
-  _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const token = await getAuthToken();
   if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { id } = await params;

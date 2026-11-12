@@ -31,7 +31,9 @@ export default function DashboardHeader({ lang, t, user }: Props) {
   const [logoutFromDb] = useLogoutFromDbMutation();
 
   async function handleLogout() {
-    await logoutFromDb().unwrap().catch(() => {});
+    await logoutFromDb()
+      .unwrap()
+      .catch(() => {});
     dispatch(logout());
     router.push(`/${lang}/login`);
     router.refresh();
@@ -42,10 +44,13 @@ export default function DashboardHeader({ lang, t, user }: Props) {
   const roleKey = user.role === "ADMIN" ? "admin" : "sales";
 
   const base = `/${lang}/dashboard/${roleKey}`;
-  const segment = pathname === base ? "" : pathname.slice(base.length).replace(/^\//, "").split("/")[0];
+  const segment =
+    pathname === base ? "" : pathname.slice(base.length).replace(/^\//, "").split("/")[0];
   const title = segment
     ? segment.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
-    : (user.role === "ADMIN" ? t.dash.overview : t.dash.myDashboard);
+    : user.role === "ADMIN"
+      ? t.dash.overview
+      : t.dash.myDashboard;
 
   return (
     <header className="dash-header">
@@ -57,7 +62,9 @@ export default function DashboardHeader({ lang, t, user }: Props) {
           <DropdownMenuTrigger asChild>
             <button type="button" className="dash-header__trigger" aria-label="Open profile menu">
               <Avatar className="dash-header__avatar">
-                <AvatarFallback className="dash-header__avatar-fallback">{name[0].toUpperCase()}</AvatarFallback>
+                <AvatarFallback className="dash-header__avatar-fallback">
+                  {name[0].toUpperCase()}
+                </AvatarFallback>
               </Avatar>
               <ChevronDown size={15} className="dash-header__chevron" aria-hidden="true" />
             </button>
@@ -65,7 +72,9 @@ export default function DashboardHeader({ lang, t, user }: Props) {
           <DropdownMenuContent>
             <div className="dmenu-head">
               <Avatar className="dash-header__avatar">
-                <AvatarFallback className="dash-header__avatar-fallback">{name[0].toUpperCase()}</AvatarFallback>
+                <AvatarFallback className="dash-header__avatar-fallback">
+                  {name[0].toUpperCase()}
+                </AvatarFallback>
               </Avatar>
               <div className="dmenu-head-text">
                 <p className="dmenu-name">{name}</p>
@@ -75,7 +84,9 @@ export default function DashboardHeader({ lang, t, user }: Props) {
             <DropdownMenuSeparator />
             <DropdownMenuLabel>{t.dash.myAccount}</DropdownMenuLabel>
             <div style={{ padding: "0 10px 6px" }}>
-              <Badge variant={roleKey === "admin" ? "default" : "success"}>{role.toUpperCase()}</Badge>
+              <Badge variant={roleKey === "admin" ? "default" : "success"}>
+                {role.toUpperCase()}
+              </Badge>
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem variant="danger" onClick={handleLogout}>

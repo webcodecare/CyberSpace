@@ -2,8 +2,6 @@ import { getDict, isLocale } from "@/lib/i18n";
 import { notFound } from "next/navigation";
 import SettingsClient from "./SettingsClient";
 
-export const dynamic = "force-dynamic";
-
 export default async function AdminSettingsPage({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();

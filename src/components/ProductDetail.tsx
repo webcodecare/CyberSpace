@@ -50,7 +50,10 @@ export default function ProductDetail({ slug }: { slug: string }) {
               <span className="skel skel--xl" style={{ width: "80%" }} />
               <span className="skel skel--md" style={{ width: "50%" }} />
               <span className="skel skel--lg" style={{ width: 140 }} />
-              <span className="skel skel--xl" style={{ width: 180, borderRadius: "var(--radius)" }} />
+              <span
+                className="skel skel--xl"
+                style={{ width: 180, borderRadius: "var(--radius)" }}
+              />
             </div>
           </div>
         </div>
@@ -59,14 +62,20 @@ export default function ProductDetail({ slug }: { slug: string }) {
     return (
       <div className="container section">
         <p className="muted">{t.product.notFound}</p>
-        <Link href={`/${lang}/shop`} className="btn btn--ghost">{t.product.back}</Link>
+        <Link href={`/${lang}/shop`} className="btn btn--ghost">
+          {t.product.back}
+        </Link>
       </div>
     );
   }
 
   const cat = dbCats.find((c) => c.slug === product.category);
-  const catName = cat ? ({ en: cat.nameEN, az: cat.nameAZ, ru: cat.nameRU }[lang] ?? cat.nameEN) : product.category;
-  const related = allProducts.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
+  const catName = cat
+    ? ({ en: cat.nameEN, az: cat.nameAZ, ru: cat.nameRU }[lang] ?? cat.nameEN)
+    : product.category;
+  const related = allProducts
+    .filter((p) => p.category === product.category && p.id !== product.id)
+    .slice(0, 4);
   const tabs: Tab[] = ["description", "specifications", "related"];
 
   const displayName = product.names?.[lang] ?? product.names?.["en"] ?? product.name;
@@ -75,32 +84,50 @@ export default function ProductDetail({ slug }: { slug: string }) {
   return (
     <div className="container section">
       <nav className="crumbs" aria-label="Breadcrumb">
-        <Link href={`/${lang}`}>{t.nav.home}</Link><span>/</span>
-        <Link href={`/${lang}/shop`}>{t.nav.shop}</Link><span>/</span>
+        <Link href={`/${lang}`}>{t.nav.home}</Link>
+        <span>/</span>
+        <Link href={`/${lang}/shop`}>{t.nav.shop}</Link>
+        <span>/</span>
         <Link href={`/${lang}/shop?category=${product.category}`}>{catName}</Link>
       </nav>
 
       <div className="detail">
         <FadeRight className="detail__media">
-          {product.imageUrl
-            ? <img src={product.imageUrl} alt={displayName} className="pimg" />
-            : <ProductImage category={product.category as CategoryId} label={displayName} />}
+          {product.imageUrl ? (
+            <img src={product.imageUrl} alt={displayName} className="pimg" />
+          ) : (
+            <ProductImage category={product.category as CategoryId} label={displayName} />
+          )}
         </FadeRight>
         <FadeLeft delay={0.06} className="detail__info">
           <span className="pill">{product.brand}</span>
           <h1 className="detail__title">{displayName}</h1>
           <dl className="detail__ids">
-            <div><dt>{t.common.partNo}</dt><dd>{product.sku}</dd></div>
-            <div><dt>{t.product.sku}</dt><dd>{product.id}</dd></div>
+            <div>
+              <dt>{t.common.partNo}</dt>
+              <dd>{product.sku}</dd>
+            </div>
+            <div>
+              <dt>{t.product.sku}</dt>
+              <dd>{product.id}</dd>
+            </div>
           </dl>
           <div className="detail__row">
             <StockBadge stock={product.stock} />
-            {product.stock !== null && product.stock > 0 && <span className="muted">{product.stock} {t.product.pcs}</span>}
+            {product.stock !== null && product.stock > 0 && (
+              <span className="muted">
+                {product.stock} {t.product.pcs}
+              </span>
+            )}
           </div>
           <div className="detail__price">
             {product.price !== null ? <PriceText product={product} /> : null}
           </div>
-          <button type="button" className="btn btn--primary btn--lg" onClick={() => dispatch(openInquiry(product.id))}>
+          <button
+            type="button"
+            className="btn btn--primary btn--lg"
+            onClick={() => dispatch(openInquiry(product.id))}
+          >
             {t.common.contactMe}
           </button>
         </FadeLeft>
@@ -109,34 +136,59 @@ export default function ProductDetail({ slug }: { slug: string }) {
       <FadeUp>
         <div className="tabs" role="tablist">
           {tabs.map((k) => (
-            <button key={k} role="tab" type="button" id={`tab-${k}`} aria-selected={tab === k} aria-controls={`panel-${k}`}
-              className={tab === k ? "is-active" : ""} onClick={() => setTab(k)}>
+            <button
+              key={k}
+              role="tab"
+              type="button"
+              id={`tab-${k}`}
+              aria-selected={tab === k}
+              aria-controls={`panel-${k}`}
+              className={tab === k ? "is-active" : ""}
+              onClick={() => setTab(k)}
+            >
               {t.product[k]}
             </button>
           ))}
         </div>
-        <div className="tabpanel" role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
-          {tab === "description" && (
-            description
-              ? <p className="prose">{description}</p>
-              : <p className="muted">{t.product.contactUs}</p>
-          )}
-          {tab === "specifications" && (
-            product.specs.length > 0 ? (
+        <div
+          className="tabpanel"
+          role="tabpanel"
+          id={`panel-${tab}`}
+          aria-labelledby={`tab-${tab}`}
+        >
+          {tab === "description" &&
+            (description ? (
+              <p className="prose">{description}</p>
+            ) : (
+              <p className="muted">{t.product.contactUs}</p>
+            ))}
+          {tab === "specifications" &&
+            (product.specs.length > 0 ? (
               <div className="tablewrap">
                 <table className="spec">
-                  <tbody>{product.specs.map(([k, v]) => <tr key={k}><th scope="row">{k}</th><td>{v}</td></tr>)}</tbody>
+                  <tbody>
+                    {product.specs.map(([k, v]) => (
+                      <tr key={k}>
+                        <th scope="row">{k}</th>
+                        <td>{v}</td>
+                      </tr>
+                    ))}
+                  </tbody>
                 </table>
               </div>
             ) : (
               <p className="muted">{t.product.contactUs}</p>
-            )
-          )}
-          {tab === "related" && (
-            related.length
-              ? <div className="pgrid">{related.map((p) => <ProductCard key={p.id} product={p} />)}</div>
-              : <p className="muted">—</p>
-          )}
+            ))}
+          {tab === "related" &&
+            (related.length ? (
+              <div className="pgrid">
+                {related.map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
+            ) : (
+              <p className="muted">—</p>
+            ))}
         </div>
       </FadeUp>
     </div>

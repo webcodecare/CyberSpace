@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthToken, BACKEND_URL } from "@/lib/server-auth";
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const token = await getAuthToken();
   if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

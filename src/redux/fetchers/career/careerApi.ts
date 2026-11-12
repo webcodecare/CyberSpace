@@ -3,20 +3,44 @@ import { tagTypes } from "@/redux/TagTypes";
 
 export interface CareerPage {
   id: number;
-  heroTitleAZ: string | null; heroTitleEN: string | null; heroTitleRU: string | null;
-  heroDescAZ: string | null; heroDescEN: string | null; heroDescRU: string | null;
+  heroTitleAZ: string | null;
+  heroTitleEN: string | null;
+  heroTitleRU: string | null;
+  heroDescAZ: string | null;
+  heroDescEN: string | null;
+  heroDescRU: string | null;
   heroImageUrl: string | null;
-  heroCta1AZ: string | null; heroCta1EN: string | null; heroCta1RU: string | null;
-  heroCta2AZ: string | null; heroCta2EN: string | null; heroCta2RU: string | null;
-  introHeadingAZ: string | null; introHeadingEN: string | null; introHeadingRU: string | null;
-  introBodyAZ: string | null; introBodyEN: string | null; introBodyRU: string | null;
+  heroCta1AZ: string | null;
+  heroCta1EN: string | null;
+  heroCta1RU: string | null;
+  heroCta2AZ: string | null;
+  heroCta2EN: string | null;
+  heroCta2RU: string | null;
+  introHeadingAZ: string | null;
+  introHeadingEN: string | null;
+  introHeadingRU: string | null;
+  introBodyAZ: string | null;
+  introBodyEN: string | null;
+  introBodyRU: string | null;
   introImageUrl: string | null;
-  missionAZ: string | null; missionEN: string | null; missionRU: string | null;
-  visionAZ: string | null; visionEN: string | null; visionRU: string | null;
-  cultureHeadingAZ: string | null; cultureHeadingEN: string | null; cultureHeadingRU: string | null;
-  cultureBodyAZ: string | null; cultureBodyEN: string | null; cultureBodyRU: string | null;
-  seoTitleAZ: string | null; seoTitleEN: string | null; seoTitleRU: string | null;
-  seoDescAZ: string | null; seoDescEN: string | null; seoDescRU: string | null;
+  missionAZ: string | null;
+  missionEN: string | null;
+  missionRU: string | null;
+  visionAZ: string | null;
+  visionEN: string | null;
+  visionRU: string | null;
+  cultureHeadingAZ: string | null;
+  cultureHeadingEN: string | null;
+  cultureHeadingRU: string | null;
+  cultureBodyAZ: string | null;
+  cultureBodyEN: string | null;
+  cultureBodyRU: string | null;
+  seoTitleAZ: string | null;
+  seoTitleEN: string | null;
+  seoTitleRU: string | null;
+  seoDescAZ: string | null;
+  seoDescEN: string | null;
+  seoDescRU: string | null;
   isPublished: boolean;
   updatedAt: string;
 }
@@ -26,8 +50,12 @@ export interface CareerBenefit {
   id: number;
   icon: string | null;
   imageUrl: string | null;
-  titleAZ: string; titleEN: string; titleRU: string;
-  descAZ: string | null; descEN: string | null; descRU: string | null;
+  titleAZ: string;
+  titleEN: string;
+  titleRU: string;
+  descAZ: string | null;
+  descEN: string | null;
+  descRU: string | null;
   isActive: boolean;
   order: number;
   createdAt: string;
@@ -39,8 +67,12 @@ export type UpdateCareerBenefitInput = Partial<CreateCareerBenefitInput>;
 export interface CareerExpertise {
   id: number;
   icon: string | null;
-  titleAZ: string; titleEN: string; titleRU: string;
-  descAZ: string | null; descEN: string | null; descRU: string | null;
+  titleAZ: string;
+  titleEN: string;
+  titleRU: string;
+  descAZ: string | null;
+  descEN: string | null;
+  descRU: string | null;
   isActive: boolean;
   order: number;
   createdAt: string;
@@ -52,7 +84,9 @@ export type UpdateCareerExpertiseInput = Partial<CreateCareerExpertiseInput>;
 export interface CareerGalleryImage {
   id: number;
   imageUrl: string;
-  captionAZ: string | null; captionEN: string | null; captionRU: string | null;
+  captionAZ: string | null;
+  captionEN: string | null;
+  captionRU: string | null;
   isActive: boolean;
   order: number;
   createdAt: string;
@@ -62,17 +96,26 @@ export type UpdateCareerGalleryImageInput = Partial<CreateCareerGalleryImageInpu
 
 export interface CareerOpportunity {
   id: number;
-  titleAZ: string; titleEN: string; titleRU: string;
+  titleAZ: string;
+  titleEN: string;
+  titleRU: string;
   department: string | null;
   location: string | null;
-  typeAZ: string | null; typeEN: string | null; typeRU: string | null;
-  descAZ: string | null; descEN: string | null; descRU: string | null;
+  typeAZ: string | null;
+  typeEN: string | null;
+  typeRU: string | null;
+  descAZ: string | null;
+  descEN: string | null;
+  descRU: string | null;
   isActive: boolean;
   order: number;
   createdAt: string;
   updatedAt: string;
 }
-export type CreateCareerOpportunityInput = Omit<CareerOpportunity, "id" | "createdAt" | "updatedAt">;
+export type CreateCareerOpportunityInput = Omit<
+  CareerOpportunity,
+  "id" | "createdAt" | "updatedAt"
+>;
 export type UpdateCareerOpportunityInput = Partial<CreateCareerOpportunityInput>;
 
 export type CareerApplicationStatus = "NEW" | "REVIEWED" | "SHORTLISTED" | "REJECTED";
@@ -113,17 +156,15 @@ export const careerApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.careerBenefit],
       transformResponse: (res: { data?: CareerBenefit[] }) => res.data ?? [],
     }),
-    getActiveCareerBenefits: builder.query<CareerBenefit[], void>({
-      query: () => "/career/benefits/active",
-      providesTags: [tagTypes.careerBenefit],
-      transformResponse: (res: { data?: CareerBenefit[] }) => res.data ?? [],
-    }),
     createCareerBenefit: builder.mutation<CareerBenefit, CreateCareerBenefitInput>({
       query: (body) => ({ url: "/career/benefits", method: "POST", body }),
       invalidatesTags: [tagTypes.careerBenefit],
       transformResponse: (res: { data?: CareerBenefit }) => res.data!,
     }),
-    updateCareerBenefit: builder.mutation<CareerBenefit, { id: number; body: UpdateCareerBenefitInput }>({
+    updateCareerBenefit: builder.mutation<
+      CareerBenefit,
+      { id: number; body: UpdateCareerBenefitInput }
+    >({
       query: ({ id, body }) => ({ url: `/career/benefits/${id}`, method: "PATCH", body }),
       invalidatesTags: [tagTypes.careerBenefit],
       transformResponse: (res: { data?: CareerBenefit }) => res.data!,
@@ -139,17 +180,15 @@ export const careerApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.careerExpertise],
       transformResponse: (res: { data?: CareerExpertise[] }) => res.data ?? [],
     }),
-    getActiveCareerExpertise: builder.query<CareerExpertise[], void>({
-      query: () => "/career/expertise/active",
-      providesTags: [tagTypes.careerExpertise],
-      transformResponse: (res: { data?: CareerExpertise[] }) => res.data ?? [],
-    }),
     createCareerExpertise: builder.mutation<CareerExpertise, CreateCareerExpertiseInput>({
       query: (body) => ({ url: "/career/expertise", method: "POST", body }),
       invalidatesTags: [tagTypes.careerExpertise],
       transformResponse: (res: { data?: CareerExpertise }) => res.data!,
     }),
-    updateCareerExpertise: builder.mutation<CareerExpertise, { id: number; body: UpdateCareerExpertiseInput }>({
+    updateCareerExpertise: builder.mutation<
+      CareerExpertise,
+      { id: number; body: UpdateCareerExpertiseInput }
+    >({
       query: ({ id, body }) => ({ url: `/career/expertise/${id}`, method: "PATCH", body }),
       invalidatesTags: [tagTypes.careerExpertise],
       transformResponse: (res: { data?: CareerExpertise }) => res.data!,
@@ -165,17 +204,15 @@ export const careerApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.careerGallery],
       transformResponse: (res: { data?: CareerGalleryImage[] }) => res.data ?? [],
     }),
-    getActiveCareerGallery: builder.query<CareerGalleryImage[], void>({
-      query: () => "/career/gallery/active",
-      providesTags: [tagTypes.careerGallery],
-      transformResponse: (res: { data?: CareerGalleryImage[] }) => res.data ?? [],
-    }),
     createCareerGalleryImage: builder.mutation<CareerGalleryImage, CreateCareerGalleryImageInput>({
       query: (body) => ({ url: "/career/gallery", method: "POST", body }),
       invalidatesTags: [tagTypes.careerGallery],
       transformResponse: (res: { data?: CareerGalleryImage }) => res.data!,
     }),
-    updateCareerGalleryImage: builder.mutation<CareerGalleryImage, { id: number; body: UpdateCareerGalleryImageInput }>({
+    updateCareerGalleryImage: builder.mutation<
+      CareerGalleryImage,
+      { id: number; body: UpdateCareerGalleryImageInput }
+    >({
       query: ({ id, body }) => ({ url: `/career/gallery/${id}`, method: "PATCH", body }),
       invalidatesTags: [tagTypes.careerGallery],
       transformResponse: (res: { data?: CareerGalleryImage }) => res.data!,
@@ -191,17 +228,15 @@ export const careerApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.careerOpportunity],
       transformResponse: (res: { data?: CareerOpportunity[] }) => res.data ?? [],
     }),
-    getActiveCareerOpportunities: builder.query<CareerOpportunity[], void>({
-      query: () => "/career/opportunities/active",
-      providesTags: [tagTypes.careerOpportunity],
-      transformResponse: (res: { data?: CareerOpportunity[] }) => res.data ?? [],
-    }),
     createCareerOpportunity: builder.mutation<CareerOpportunity, CreateCareerOpportunityInput>({
       query: (body) => ({ url: "/career/opportunities", method: "POST", body }),
       invalidatesTags: [tagTypes.careerOpportunity],
       transformResponse: (res: { data?: CareerOpportunity }) => res.data!,
     }),
-    updateCareerOpportunity: builder.mutation<CareerOpportunity, { id: number; body: UpdateCareerOpportunityInput }>({
+    updateCareerOpportunity: builder.mutation<
+      CareerOpportunity,
+      { id: number; body: UpdateCareerOpportunityInput }
+    >({
       query: ({ id, body }) => ({ url: `/career/opportunities/${id}`, method: "PATCH", body }),
       invalidatesTags: [tagTypes.careerOpportunity],
       transformResponse: (res: { data?: CareerOpportunity }) => res.data!,
@@ -227,8 +262,15 @@ export const careerApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.careerApplication],
       transformResponse: (res: { data?: CareerApplication }) => res.data!,
     }),
-    updateCareerApplicationStatus: builder.mutation<CareerApplication, { id: number; status: CareerApplicationStatus }>({
-      query: ({ id, status }) => ({ url: `/career/applications/${id}`, method: "PATCH", body: { status } }),
+    updateCareerApplicationStatus: builder.mutation<
+      CareerApplication,
+      { id: number; status: CareerApplicationStatus }
+    >({
+      query: ({ id, status }) => ({
+        url: `/career/applications/${id}`,
+        method: "PATCH",
+        body: { status },
+      }),
       invalidatesTags: [tagTypes.careerApplication],
       transformResponse: (res: { data?: CareerApplication }) => res.data!,
     }),
@@ -243,22 +285,18 @@ export const {
   useGetCareerPageQuery,
   useUpdateCareerPageMutation,
   useGetCareerBenefitsQuery,
-  useGetActiveCareerBenefitsQuery,
   useCreateCareerBenefitMutation,
   useUpdateCareerBenefitMutation,
   useDeleteCareerBenefitMutation,
   useGetCareerExpertiseQuery,
-  useGetActiveCareerExpertiseQuery,
   useCreateCareerExpertiseMutation,
   useUpdateCareerExpertiseMutation,
   useDeleteCareerExpertiseMutation,
   useGetCareerGalleryQuery,
-  useGetActiveCareerGalleryQuery,
   useCreateCareerGalleryImageMutation,
   useUpdateCareerGalleryImageMutation,
   useDeleteCareerGalleryImageMutation,
   useGetCareerOpportunitiesQuery,
-  useGetActiveCareerOpportunitiesQuery,
   useCreateCareerOpportunityMutation,
   useUpdateCareerOpportunityMutation,
   useDeleteCareerOpportunityMutation,

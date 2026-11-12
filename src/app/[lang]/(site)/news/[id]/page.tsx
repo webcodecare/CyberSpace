@@ -3,12 +3,10 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getDict, isLocale } from "@/lib/i18n";
-import { BACKEND_URL } from "@/lib/server-auth";
+import { CACHE_TAGS, serverGet } from "@/lib/server-api";
 import { formatDay } from "@/lib/format";
 import { pageMeta } from "@/lib/seo";
 import { FadeUp, FadeDown } from "@/components/Motion";
-
-export const dynamic = "force-dynamic";
 
 interface NewsTranslation {
   lang: string;
@@ -28,27 +26,14 @@ interface NewsItem {
 
 type Params = Promise<{ lang: string; id: string }>;
 
-async function fetchBySlug(slug: string): Promise<NewsItem | null> {
-  try {
-    const res = await fetch(`${BACKEND_URL}/news/slug/${encodeURIComponent(slug)}`, { cache: "no-store" });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json.data ?? null;
-  } catch {
-    return null;
-  }
-}
-
-async function fetchPublished(): Promise<Pick<NewsItem, "id" | "slug" | "imageUrl" | "publishedAt" | "translations">[]> {
-  try {
-    const res = await fetch(`${BACKEND_URL}/news/published`, { cache: "no-store" });
-    if (!res.ok) return [];
-    const json = await res.json();
-    return json.data ?? [];
-  } catch {
-    return [];
-  }
-}
+const fetchBySlug = (slug: string) =>
+  serverGet<NewsItem | null>(`/news/slug/${encodeURIComponent(slug)}`, null, [CACHE_TAGS.news]);
+const fetchPublished = () =>
+  serverGet<Pick<NewsItem, "id" | "slug" | "imageUrl" | "publishedAt" | "translations">[]>(
+    "/news/published",
+    [],
+    [CACHE_TAGS.news],
+  );
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { lang, id } = await params;
@@ -84,22 +69,43 @@ export default async function NewsDetail({ params }: { params: Params }) {
   const allNews = await fetchPublished();
   const related = allNews.filter((n) => n.slug !== id).slice(0, 3);
 
-  const backLabel = { en: "Back to News", az: "Xəbərlərə qayıt", ru: "К новостям" }[lang as "en" | "az" | "ru"] ?? "Back to News";
-  const relatedLabel = { en: "More Articles", az: "Digər Məqalələr", ru: "Другие статьи" }[lang as "en" | "az" | "ru"] ?? "More Articles";
-  const readMoreLabel = { en: "Read more →", az: "Daha çox oxu →", ru: "Читать далее →" }[lang as "en" | "az" | "ru"] ?? "Read more →";
+  const backLabel =
+    { en: "Back to News", az: "Xəbərlərə qayıt", ru: "К новостям" }[lang as "en" | "az" | "ru"] ??
+    "Back to News";
+  const relatedLabel =
+    { en: "More Articles", az: "Digər Məqalələr", ru: "Другие статьи" }[
+      lang as "en" | "az" | "ru"
+    ] ?? "More Articles";
+  const readMoreLabel =
+    { en: "Read more →", az: "Daha çox oxu →", ru: "Читать далее →" }[lang as "en" | "az" | "ru"] ??
+    "Read more →";
   const byLabel = { en: "By", az: "Müəllif:", ru: "Автор:" }[lang as "en" | "az" | "ru"] ?? "By";
 
-  const bodyParagraphs = trans.body ? trans.body.split(/\n\n+/).filter(Boolean) : (trans.excerpt ? [trans.excerpt] : []);
+  const bodyParagraphs = trans.body
+    ? trans.body.split(/\n\n+/).filter(Boolean)
+    : trans.excerpt
+      ? [trans.excerpt]
+      : [];
 
   return (
     <>
       <nav className="breadcrumb" aria-label="Breadcrumb">
         <div className="container breadcrumb__inner">
-          <Link href={`/${lang}`} className="breadcrumb__link">{t.nav.home}</Link>
-          <span className="breadcrumb__sep" aria-hidden="true">›</span>
-          <Link href={`/${lang}/news`} className="breadcrumb__link">{t.nav.news}</Link>
-          <span className="breadcrumb__sep" aria-hidden="true">›</span>
-          <span className="breadcrumb__current" aria-current="page">{trans.title}</span>
+          <Link href={`/${lang}`} className="breadcrumb__link">
+            {t.nav.home}
+          </Link>
+          <span className="breadcrumb__sep" aria-hidden="true">
+            ›
+          </span>
+          <Link href={`/${lang}/news`} className="breadcrumb__link">
+            {t.nav.news}
+          </Link>
+          <span className="breadcrumb__sep" aria-hidden="true">
+            ›
+          </span>
+          <span className="breadcrumb__current" aria-current="page">
+            {trans.title}
+          </span>
         </div>
       </nav>
 
@@ -113,7 +119,9 @@ export default async function NewsDetail({ params }: { params: Params }) {
                 </time>
               )}
               {article.authorName && (
-                <span className="news-detail__author">{byLabel} {article.authorName}</span>
+                <span className="news-detail__author">
+                  {byLabel} {article.authorName}
+                </span>
               )}
             </div>
             <h1 className="news-detail__title">{trans.title}</h1>
@@ -142,7 +150,9 @@ export default async function NewsDetail({ params }: { params: Params }) {
         <div className="news-detail__body container">
           <FadeUp>
             <div className="news-detail__prose">
-              {bodyParagraphs.map((para, i) => <p key={i}>{para}</p>)}
+              {bodyParagraphs.map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
             </div>
           </FadeUp>
           <FadeUp delay={0.1}>
@@ -191,7 +201,9 @@ export default async function NewsDetail({ params }: { params: Params }) {
                           )}
                         </div>
                         <h3 className="news-full-card__title">{rTrans?.title ?? n.slug}</h3>
-                        {rTrans?.excerpt && <p className="news-full-card__excerpt">{rTrans.excerpt}</p>}
+                        {rTrans?.excerpt && (
+                          <p className="news-full-card__excerpt">{rTrans.excerpt}</p>
+                        )}
                         <span className="sol-card__link">{readMoreLabel}</span>
                       </div>
                     </Link>

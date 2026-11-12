@@ -35,7 +35,9 @@ DropdownMenuLabel.displayName = "DropdownMenuLabel";
 
 const DropdownMenuItem = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & { variant?: "default" | "danger" }
+  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> & {
+    variant?: "default" | "danger";
+  }
 >(({ className, variant = "default", ...props }, ref) => (
   <DropdownMenuPrimitive.Item
     ref={ref}
@@ -49,7 +51,11 @@ const DropdownMenuSeparator = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Separator>,
   React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator>
 >(({ className, ...props }, ref) => (
-  <DropdownMenuPrimitive.Separator ref={ref} className={cn("dmenu-separator", className)} {...props} />
+  <DropdownMenuPrimitive.Separator
+    ref={ref}
+    className={cn("dmenu-separator", className)}
+    {...props}
+  />
 ));
 DropdownMenuSeparator.displayName = "DropdownMenuSeparator";
 

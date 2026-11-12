@@ -16,7 +16,14 @@ import { Input } from "@/components/ui/input";
 import { Handshake } from "lucide-react";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogForm,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogBody,
+  DialogFooter,
+  DialogForm,
 } from "@/components/ui/dialog";
 import type { Dict } from "@/lib/i18n";
 
@@ -24,16 +31,26 @@ type LangKey = "EN" | "AZ" | "RU";
 const LANGS: LangKey[] = ["EN", "AZ", "RU"];
 
 const emptyForm = (): CreatePartnerInput => ({
-  name: "", logoUrl: "", websiteUrl: "",
-  descEN: "", descAZ: "", descRU: "",
-  isActive: true, order: 0,
+  name: "",
+  logoUrl: "",
+  websiteUrl: "",
+  descEN: "",
+  descAZ: "",
+  descRU: "",
+  isActive: true,
+  order: 0,
 });
 
 function partnerToForm(p: Partner): CreatePartnerInput {
   return {
-    name: p.name, logoUrl: p.logoUrl ?? "", websiteUrl: p.websiteUrl ?? "",
-    descEN: p.descEN ?? "", descAZ: p.descAZ ?? "", descRU: p.descRU ?? "",
-    isActive: p.isActive, order: p.order,
+    name: p.name,
+    logoUrl: p.logoUrl ?? "",
+    websiteUrl: p.websiteUrl ?? "",
+    descEN: p.descEN ?? "",
+    descAZ: p.descAZ ?? "",
+    descRU: p.descRU ?? "",
+    isActive: p.isActive,
+    order: p.order,
   };
 }
 
@@ -81,13 +98,26 @@ export default function PartnersClient({ t }: { t: Dict }) {
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
 
   function openCreate() {
-    setEditing(null); setForm(emptyForm()); setError(""); setSuccess(""); setActiveLang("EN"); setOpen(true);
+    setEditing(null);
+    setForm(emptyForm());
+    setError("");
+    setSuccess("");
+    setActiveLang("EN");
+    setOpen(true);
   }
   function openEdit(p: Partner) {
-    setEditing(p); setForm(partnerToForm(p)); setError(""); setSuccess(""); setActiveLang("EN"); setOpen(true);
+    setEditing(p);
+    setForm(partnerToForm(p));
+    setError("");
+    setSuccess("");
+    setActiveLang("EN");
+    setOpen(true);
   }
   function handleOpenChange(v: boolean) {
-    if (!v) { setOpen(false); setEditing(null); }
+    if (!v) {
+      setOpen(false);
+      setEditing(null);
+    }
   }
 
   function set<K extends keyof CreatePartnerInput>(key: K, value: CreatePartnerInput[K]) {
@@ -97,7 +127,10 @@ export default function PartnersClient({ t }: { t: Dict }) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!form.name.trim()) { setError("Name is required."); return; }
+    if (!form.name.trim()) {
+      setError("Name is required.");
+      return;
+    }
     try {
       const payload = cleanPayload(form);
       if (editing) {
@@ -107,7 +140,11 @@ export default function PartnersClient({ t }: { t: Dict }) {
         await create(payload).unwrap();
         setSuccess("Created!");
       }
-      setTimeout(() => { setSuccess(""); setOpen(false); setEditing(null); }, 1200);
+      setTimeout(() => {
+        setSuccess("");
+        setOpen(false);
+        setEditing(null);
+      }, 1200);
     } catch (err: unknown) {
       const msg = (err as { data?: { message?: string } })?.data?.message;
       setError(msg ?? "Save failed. Please try again.");
@@ -164,9 +201,28 @@ export default function PartnersClient({ t }: { t: Dict }) {
         </div>
       ) : partners.length === 0 ? (
         <div className="dash-empty">
-          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ opacity: 0.3 }}><path d="M17 20h5v-2a3 3 0 0 0-5.356-1.857"/><path d="M9 20H4v-2a3 3 0 0 1 5.356-1.857"/><circle cx="12" cy="7" r="4"/></svg>
+          <svg
+            viewBox="0 0 24 24"
+            width="36"
+            height="36"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            style={{ opacity: 0.3 }}
+          >
+            <path d="M17 20h5v-2a3 3 0 0 0-5.356-1.857" />
+            <path d="M9 20H4v-2a3 3 0 0 1 5.356-1.857" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
           <p>{t.dash.noData}</p>
-          <Button type="button" size="sm" variant="outline" className="dash-empty__cta" onClick={openCreate}>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            className="dash-empty__cta"
+            onClick={openCreate}
+          >
             {t.dash.add ?? "Add Partner"}
           </Button>
         </div>
@@ -187,27 +243,64 @@ export default function PartnersClient({ t }: { t: Dict }) {
               {partners.map((p) => (
                 <tr key={p.id}>
                   <td>
-                    {p.logoUrl
-                      ? <img src={p.logoUrl} alt={p.name} className="dash-thumb" />
-                      : <div className="dash-thumb-placeholder"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
-                    }
+                    {p.logoUrl ? (
+                      <img src={p.logoUrl} alt={p.name} className="dash-thumb" />
+                    ) : (
+                      <div className="dash-thumb-placeholder">
+                        <svg
+                          viewBox="0 0 24 24"
+                          width="14"
+                          height="14"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <rect x="3" y="3" width="18" height="18" rx="2" />
+                          <circle cx="8.5" cy="8.5" r="1.5" />
+                          <polyline points="21 15 16 10 5 21" />
+                        </svg>
+                      </div>
+                    )}
                   </td>
                   <td>{p.name}</td>
                   <td>
-                    {p.websiteUrl
-                      ? <a href={p.websiteUrl.startsWith("http") ? p.websiteUrl : `https://${p.websiteUrl}`} target="_blank" rel="noreferrer" style={{ color: "var(--blue)" }}>{hostnameOf(p.websiteUrl)}</a>
-                      : "—"}
+                    {p.websiteUrl ? (
+                      <a
+                        href={
+                          p.websiteUrl.startsWith("http") ? p.websiteUrl : `https://${p.websiteUrl}`
+                        }
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ color: "var(--blue)" }}
+                      >
+                        {hostnameOf(p.websiteUrl)}
+                      </a>
+                    ) : (
+                      "—"
+                    )}
                   </td>
                   <td>{p.order}</td>
                   <td>
-                    <span className={`status-badge ${p.isActive ? "status-badge--ok" : "status-badge--off"}`}>
+                    <span
+                      className={`status-badge ${p.isActive ? "status-badge--ok" : "status-badge--off"}`}
+                    >
                       {p.isActive ? "Active" : "Off"}
                     </span>
                   </td>
                   <td>
                     <div className="dash-actions">
-                    <Button type="button" variant="outline" size="sm" onClick={() => openEdit(p)}>{t.dash.edit ?? "Edit"}</Button>
-                    <Button type="button" variant="destructive" size="sm" disabled={deleting} onClick={() => promptDelete(p.id)}>{t.dash.delete ?? "Delete"}</Button>
+                      <Button type="button" variant="outline" size="sm" onClick={() => openEdit(p)}>
+                        {t.dash.edit ?? "Edit"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        disabled={deleting}
+                        onClick={() => promptDelete(p.id)}
+                      >
+                        {t.dash.delete ?? "Delete"}
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -233,9 +326,13 @@ export default function PartnersClient({ t }: { t: Dict }) {
         <DialogContent size="wide" onInteractOutside={(e) => e.preventDefault()}>
           <DialogHeader>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div className="dlg-hdr-icon dlg-hdr-icon--cyan"><Handshake size={20} strokeWidth={2} color="#fff" /></div>
+              <div className="dlg-hdr-icon dlg-hdr-icon--cyan">
+                <Handshake size={20} strokeWidth={2} color="#fff" />
+              </div>
               <div>
-                <DialogTitle>{editing ? (t.dash.edit ?? "Edit") : (t.dash.add ?? "Add")} Partner</DialogTitle>
+                <DialogTitle>
+                  {editing ? (t.dash.edit ?? "Edit") : (t.dash.add ?? "Add")} Partner
+                </DialogTitle>
                 <DialogDescription>Partner details and multilingual description.</DialogDescription>
               </div>
             </div>
@@ -243,13 +340,25 @@ export default function PartnersClient({ t }: { t: Dict }) {
 
           <DialogForm id="partner-form" onSubmit={handleSubmit} noValidate>
             <DialogBody>
-              {error && <p className="pf-alert pf-alert--error" role="alert">{error}</p>}
+              {error && (
+                <p className="pf-alert pf-alert--error" role="alert">
+                  {error}
+                </p>
+              )}
               {success && <p className="notice notice--ok mb-3">{success}</p>}
 
               <div className="pf-field" style={{ marginBottom: 12 }}>
-                <label htmlFor="p-name" className="pf-label">Name *</label>
-                <Input id="p-name" value={form.name} onChange={(e) => set("name", e.target.value)}
-                  disabled={busy} maxLength={200} className="pf-input" />
+                <label htmlFor="p-name" className="pf-label">
+                  Name *
+                </label>
+                <Input
+                  id="p-name"
+                  value={form.name}
+                  onChange={(e) => set("name", e.target.value)}
+                  disabled={busy}
+                  maxLength={200}
+                  className="pf-input"
+                />
               </div>
 
               <ImageUpload
@@ -261,25 +370,44 @@ export default function PartnersClient({ t }: { t: Dict }) {
               />
 
               <div className="pf-field" style={{ marginTop: 12 }}>
-                <label htmlFor="p-websiteUrl" className="pf-label">Website</label>
-                <Input id="p-websiteUrl" type="url" value={form.websiteUrl ?? ""}
+                <label htmlFor="p-websiteUrl" className="pf-label">
+                  Website
+                </label>
+                <Input
+                  id="p-websiteUrl"
+                  type="url"
+                  value={form.websiteUrl ?? ""}
                   onChange={(e) => set("websiteUrl", e.target.value)}
-                  disabled={busy} placeholder="https://partner.com" className="pf-input" />
+                  disabled={busy}
+                  placeholder="https://partner.com"
+                  className="pf-input"
+                />
               </div>
 
               <div className="pf-lang-tabs" style={{ marginTop: 16 }} role="tablist">
                 {LANGS.map((l) => (
-                  <button key={l} type="button" role="tab" aria-selected={activeLang === l}
+                  <button
+                    key={l}
+                    type="button"
+                    role="tab"
+                    aria-selected={activeLang === l}
                     className={`pf-lang-tab${activeLang === l ? " is-active" : ""}`}
-                    onClick={() => setActiveLang(l)}>
+                    onClick={() => setActiveLang(l)}
+                  >
                     {l}
                   </button>
                 ))}
               </div>
 
               {LANGS.map((l) => (
-                <div key={l} className="pf-field" style={{ display: activeLang === l ? "flex" : "none", marginTop: 8 }}>
-                  <label htmlFor={`p-desc-${l}`} className="pf-label">Description {l}</label>
+                <div
+                  key={l}
+                  className="pf-field"
+                  style={{ display: activeLang === l ? "flex" : "none", marginTop: 8 }}
+                >
+                  <label htmlFor={`p-desc-${l}`} className="pf-label">
+                    Description {l}
+                  </label>
                   <textarea
                     id={`p-desc-${l}`}
                     rows={4}
@@ -294,17 +422,31 @@ export default function PartnersClient({ t }: { t: Dict }) {
 
               <div className="pf-grid-2" style={{ marginTop: 16 }}>
                 <div className="pf-field">
-                  <label htmlFor="p-order" className="pf-label">{t.dash.formOrder ?? "Order"}</label>
-                  <Input id="p-order" type="number" value={String(form.order)}
+                  <label htmlFor="p-order" className="pf-label">
+                    {t.dash.formOrder ?? "Order"}
+                  </label>
+                  <Input
+                    id="p-order"
+                    type="number"
+                    value={String(form.order)}
                     onChange={(e) => set("order", parseInt(e.target.value) || 0)}
-                    disabled={busy} className="pf-input" />
+                    disabled={busy}
+                    className="pf-input"
+                  />
                 </div>
                 <div className="pf-field">
-                  <label htmlFor="p-active" className="pf-label">{t.dash.formActive ?? "Active"}</label>
+                  <label htmlFor="p-active" className="pf-label">
+                    {t.dash.formActive ?? "Active"}
+                  </label>
                   <div className="dash-check-wrap">
-                    <input id="p-active" type="checkbox" className="dash-check" checked={form.isActive}
+                    <input
+                      id="p-active"
+                      type="checkbox"
+                      className="dash-check"
+                      checked={form.isActive}
                       onChange={(e) => set("isActive", e.target.checked)}
-                      disabled={busy} />
+                      disabled={busy}
+                    />
                     <span style={{ fontSize: ".875rem", color: "var(--text)" }}>
                       {form.isActive ? "Partner is visible" : "Partner is hidden"}
                     </span>
@@ -314,9 +456,11 @@ export default function PartnersClient({ t }: { t: Dict }) {
             </DialogBody>
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
               <Button type="submit" form="partner-form" disabled={busy}>
-                {busy ? "Saving…" : (editing ? t.dash.save : "Create Partner")}
+                {busy ? "Saving…" : editing ? t.dash.save : "Create Partner"}
               </Button>
             </DialogFooter>
           </DialogForm>

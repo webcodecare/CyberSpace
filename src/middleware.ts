@@ -73,10 +73,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/",
-    "/(az|en|ru)/dashboard/:path*",
-    "/(az|en|ru)/login",
-    "/(az|en|ru)/register",
-  ],
+  matcher: ["/", "/(az|en|ru)/dashboard/:path*", "/(az|en|ru)/login", "/(az|en|ru)/register"],
 };

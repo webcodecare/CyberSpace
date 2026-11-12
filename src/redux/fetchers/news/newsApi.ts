@@ -46,21 +46,6 @@ export const newsApi = baseApi.injectEndpoints({
       providesTags: [tagTypes.news],
       transformResponse: (res: { data?: NewsItem[] }) => res.data ?? [],
     }),
-    getPublishedNews: builder.query<NewsItem[], void>({
-      query: () => "/news/published",
-      providesTags: [tagTypes.news],
-      transformResponse: (res: { data?: NewsItem[] }) => res.data ?? [],
-    }),
-    getNewsBySlug: builder.query<NewsItem, string>({
-      query: (slug) => `/news/slug/${encodeURIComponent(slug)}`,
-      providesTags: [tagTypes.news],
-      transformResponse: (res: { data?: NewsItem }) => res.data!,
-    }),
-    getNewsById: builder.query<NewsItem, number>({
-      query: (id) => `/news/${id}`,
-      providesTags: [tagTypes.news],
-      transformResponse: (res: { data?: NewsItem }) => res.data!,
-    }),
     createNews: builder.mutation<NewsItem, CreateNewsInput>({
       query: (body) => ({ url: "/news", method: "POST", body }),
       invalidatesTags: [tagTypes.news],
@@ -80,9 +65,6 @@ export const newsApi = baseApi.injectEndpoints({
 
 export const {
   useGetNewsQuery,
-  useGetPublishedNewsQuery,
-  useGetNewsBySlugQuery,
-  useGetNewsByIdQuery,
   useCreateNewsMutation,
   useUpdateNewsMutation,
   useDeleteNewsMutation,

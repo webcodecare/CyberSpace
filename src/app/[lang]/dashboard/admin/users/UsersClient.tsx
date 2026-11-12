@@ -5,7 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogForm,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogBody,
+  DialogFooter,
+  DialogForm,
 } from "@/components/ui/dialog";
 import { Users } from "lucide-react";
 import { formatDate } from "@/lib/format";
@@ -105,7 +112,15 @@ export default function UsersClient({
           <h1 className="dash-page-title">{t.dash.users}</h1>
           <p className="dash-page-sub">Manage user accounts, roles, and access.</p>
         </div>
-        <Button type="button" size="sm" onClick={() => { setCreateError(""); setOpen(true); }} style={{ flexShrink: 0 }}>
+        <Button
+          type="button"
+          size="sm"
+          onClick={() => {
+            setCreateError("");
+            setOpen(true);
+          }}
+          style={{ flexShrink: 0 }}
+        >
           + {t.dash.createAdmin}
         </Button>
       </div>
@@ -123,16 +138,37 @@ export default function UsersClient({
       {isLoading ? (
         <div className="dash-table-wrap">
           <table className="dash-table">
-            <thead><tr><th>{t.dash.name}</th><th>{t.dash.email}</th><th>{t.dash.role}</th><th>{t.dash.active}</th><th>{t.dash.date}</th><th>{t.dash.actions}</th></tr></thead>
+            <thead>
+              <tr>
+                <th>{t.dash.name}</th>
+                <th>{t.dash.email}</th>
+                <th>{t.dash.role}</th>
+                <th>{t.dash.active}</th>
+                <th>{t.dash.date}</th>
+                <th>{t.dash.actions}</th>
+              </tr>
+            </thead>
             <tbody>
               {Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i}>
-                  <td><span className="skel skel--md" /></td>
-                  <td><span className="skel skel--md" /></td>
-                  <td><span className="skel skel--badge" /></td>
-                  <td><span className="skel skel--badge" /></td>
-                  <td><span className="skel skel--sm" /></td>
-                  <td><span className="skel skel--badge" /></td>
+                  <td>
+                    <span className="skel skel--md" />
+                  </td>
+                  <td>
+                    <span className="skel skel--md" />
+                  </td>
+                  <td>
+                    <span className="skel skel--badge" />
+                  </td>
+                  <td>
+                    <span className="skel skel--badge" />
+                  </td>
+                  <td>
+                    <span className="skel skel--sm" />
+                  </td>
+                  <td>
+                    <span className="skel skel--badge" />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -140,7 +176,19 @@ export default function UsersClient({
         </div>
       ) : filtered.length === 0 ? (
         <div className="dash-empty">
-          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ opacity: 0.3 }}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          <svg
+            viewBox="0 0 24 24"
+            width="36"
+            height="36"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            style={{ opacity: 0.3 }}
+          >
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+          </svg>
           <p>{t.dash.noData}</p>
         </div>
       ) : (
@@ -192,7 +240,9 @@ export default function UsersClient({
                   <td>
                     {u.id !== currentUserId && (
                       <Button
-                        type="button" variant="destructive" size="sm"
+                        type="button"
+                        variant="destructive"
+                        size="sm"
                         disabled={updatingId === u.id || deleting}
                         onClick={() => promptDelete(u.id)}
                       >
@@ -221,7 +271,9 @@ export default function UsersClient({
         <DialogContent onInteractOutside={(e) => e.preventDefault()}>
           <DialogHeader>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div className="dlg-hdr-icon dlg-hdr-icon--blue"><Users size={20} strokeWidth={2} color="#fff" /></div>
+              <div className="dlg-hdr-icon dlg-hdr-icon--blue">
+                <Users size={20} strokeWidth={2} color="#fff" />
+              </div>
               <div>
                 <DialogTitle>{t.dash.createAdmin}</DialogTitle>
                 <DialogDescription>New admin account. Password min 6 characters.</DialogDescription>
@@ -235,28 +287,51 @@ export default function UsersClient({
 
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 <div className="pf-field">
-                  <label htmlFor="ua-name" className="pf-label">{t.dash.name}</label>
-                  <Input id="ua-name" type="text" value={form.name}
+                  <label htmlFor="ua-name" className="pf-label">
+                    {t.dash.name}
+                  </label>
+                  <Input
+                    id="ua-name"
+                    type="text"
+                    value={form.name}
                     onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                    required className="pf-input" />
+                    required
+                    className="pf-input"
+                  />
                 </div>
                 <div className="pf-field">
-                  <label htmlFor="ua-email" className="pf-label">{t.dash.email}</label>
-                  <Input id="ua-email" type="email" value={form.email}
+                  <label htmlFor="ua-email" className="pf-label">
+                    {t.dash.email}
+                  </label>
+                  <Input
+                    id="ua-email"
+                    type="email"
+                    value={form.email}
                     onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                    required className="pf-input" />
+                    required
+                    className="pf-input"
+                  />
                 </div>
                 <div className="pf-field">
-                  <label htmlFor="ua-password" className="pf-label">{t.auth.password}</label>
-                  <Input id="ua-password" type="password" value={form.password}
+                  <label htmlFor="ua-password" className="pf-label">
+                    {t.auth.password}
+                  </label>
+                  <Input
+                    id="ua-password"
+                    type="password"
+                    value={form.password}
                     onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-                    required className="pf-input" />
+                    required
+                    className="pf-input"
+                  />
                 </div>
               </div>
             </DialogBody>
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                Cancel
+              </Button>
               <Button type="submit" form="create-admin-form" disabled={creating}>
                 {creating ? t.dash.saving : t.dash.createAdmin}
               </Button>

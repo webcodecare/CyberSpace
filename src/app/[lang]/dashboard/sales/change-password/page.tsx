@@ -2,8 +2,6 @@ import { getDict, isLocale } from "@/lib/i18n";
 import { notFound } from "next/navigation";
 import ChangePasswordForm from "@/components/dashboard/ChangePasswordForm";
 
-export const dynamic = "force-dynamic";
-
 export default async function SalesChangePasswordPage({
   params,
 }: {

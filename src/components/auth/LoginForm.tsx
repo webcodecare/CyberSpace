@@ -34,29 +34,74 @@ export default function LoginForm({ lang }: { lang: string }) {
 
   return (
     <form className="auth-form" onSubmit={handleSubmit} noValidate>
-      {clientError && <div className="auth-error" role="alert">{clientError}</div>}
+      {clientError && (
+        <div className="auth-error" role="alert">
+          {clientError}
+        </div>
+      )}
       <div className="form-group">
-        <label className="form-label" htmlFor="email">{t.auth.email}</label>
+        <label className="form-label" htmlFor="email">
+          {t.auth.email}
+        </label>
         <input
-          id="email" type="email" className="form-input"
-          value={email} onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com" autoComplete="email" required
+          id="email"
+          type="email"
+          className="form-input"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+          autoComplete="email"
+          required
         />
       </div>
       <div className="form-group">
-        <label className="form-label" htmlFor="password">{t.auth.password}</label>
+        <label className="form-label" htmlFor="password">
+          {t.auth.password}
+        </label>
         <div className="input-wrap">
           <input
-            id="password" type={showPw ? "text" : "password"} className="form-input form-input--pw"
-            value={password} onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••" autoComplete="current-password" required
+            id="password"
+            type={showPw ? "text" : "password"}
+            className="form-input form-input--pw"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            autoComplete="current-password"
+            required
           />
-          <button type="button" className="pw-toggle" onClick={() => setShowPw((v) => !v)}
-            aria-label={showPw ? t.auth.hidePassword : t.auth.showPassword}>
+          <button
+            type="button"
+            className="pw-toggle"
+            onClick={() => setShowPw((v) => !v)}
+            aria-label={showPw ? t.auth.hidePassword : t.auth.showPassword}
+          >
             {showPw ? (
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="m1 1 22 22"/></svg>
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                <path d="m1 1 22 22" />
+              </svg>
             ) : (
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
             )}
           </button>
         </div>

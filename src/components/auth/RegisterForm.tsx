@@ -20,10 +20,22 @@ export default function RegisterForm({ lang }: { lang: string }) {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setClientError("");
-    if (!name.trim() || name.trim().length < 2) { setClientError(t.auth.errName); return; }
-    if (!email.trim()) { setClientError(t.auth.errEmail); return; }
-    if (password.length < 6) { setClientError(t.auth.errPasswordLen); return; }
-    if (password !== confirm) { setClientError(t.auth.errPasswordMatch); return; }
+    if (!name.trim() || name.trim().length < 2) {
+      setClientError(t.auth.errName);
+      return;
+    }
+    if (!email.trim()) {
+      setClientError(t.auth.errEmail);
+      return;
+    }
+    if (password.length < 6) {
+      setClientError(t.auth.errPasswordLen);
+      return;
+    }
+    if (password !== confirm) {
+      setClientError(t.auth.errPasswordMatch);
+      return;
+    }
     try {
       await register({ name: name.trim(), email: email.trim(), password }).unwrap();
       router.push(`/${lang}/dashboard`);
@@ -36,38 +48,107 @@ export default function RegisterForm({ lang }: { lang: string }) {
 
   return (
     <form className="auth-form" onSubmit={handleSubmit} noValidate>
-      {clientError && <div className="auth-error" role="alert">{clientError}</div>}
+      {clientError && (
+        <div className="auth-error" role="alert">
+          {clientError}
+        </div>
+      )}
       <div className="form-group">
-        <label className="form-label" htmlFor="name">{t.auth.name}</label>
-        <input id="name" type="text" className="form-input" value={name}
-          onChange={(e) => setName(e.target.value)} placeholder={t.auth.namePh} autoComplete="name" required />
+        <label className="form-label" htmlFor="name">
+          {t.auth.name}
+        </label>
+        <input
+          id="name"
+          type="text"
+          className="form-input"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder={t.auth.namePh}
+          autoComplete="name"
+          required
+        />
       </div>
       <div className="form-group">
-        <label className="form-label" htmlFor="reg-email">{t.auth.email}</label>
-        <input id="reg-email" type="email" className="form-input" value={email}
-          onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" autoComplete="email" required />
+        <label className="form-label" htmlFor="reg-email">
+          {t.auth.email}
+        </label>
+        <input
+          id="reg-email"
+          type="email"
+          className="form-input"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="you@example.com"
+          autoComplete="email"
+          required
+        />
       </div>
       <div className="form-group">
-        <label className="form-label" htmlFor="reg-password">{t.auth.password}</label>
+        <label className="form-label" htmlFor="reg-password">
+          {t.auth.password}
+        </label>
         <div className="input-wrap">
-          <input id="reg-password" type={showPw ? "text" : "password"} className="form-input form-input--pw"
-            value={password} onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••" autoComplete="new-password" required />
-          <button type="button" className="pw-toggle" onClick={() => setShowPw((v) => !v)}
-            aria-label={showPw ? t.auth.hidePassword : t.auth.showPassword}>
+          <input
+            id="reg-password"
+            type={showPw ? "text" : "password"}
+            className="form-input form-input--pw"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            autoComplete="new-password"
+            required
+          />
+          <button
+            type="button"
+            className="pw-toggle"
+            onClick={() => setShowPw((v) => !v)}
+            aria-label={showPw ? t.auth.hidePassword : t.auth.showPassword}
+          >
             {showPw ? (
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="m1 1 22 22"/></svg>
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                <path d="m1 1 22 22" />
+              </svg>
             ) : (
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg
+                viewBox="0 0 24 24"
+                width="18"
+                height="18"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
             )}
           </button>
         </div>
       </div>
       <div className="form-group">
-        <label className="form-label" htmlFor="confirm">{t.auth.confirmPassword}</label>
-        <input id="confirm" type={showPw ? "text" : "password"} className="form-input"
-          value={confirm} onChange={(e) => setConfirm(e.target.value)}
-          placeholder="••••••••" autoComplete="new-password" required />
+        <label className="form-label" htmlFor="confirm">
+          {t.auth.confirmPassword}
+        </label>
+        <input
+          id="confirm"
+          type={showPw ? "text" : "password"}
+          className="form-input"
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+          placeholder="••••••••"
+          autoComplete="new-password"
+          required
+        />
       </div>
       <button type="submit" className="btn btn--primary btn--block btn--lg" disabled={isLoading}>
         {isLoading ? t.auth.registering : t.auth.register}

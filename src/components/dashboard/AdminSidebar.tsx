@@ -4,9 +4,20 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
-  LayoutDashboard, Package, Layers, MessageSquare, Users,
-  Handshake, Newspaper, Settings, Lock, Globe, LogOut,
-  Menu, X, Briefcase,
+  LayoutDashboard,
+  Package,
+  Layers,
+  MessageSquare,
+  Users,
+  Handshake,
+  Newspaper,
+  Settings,
+  Lock,
+  Globe,
+  LogOut,
+  Menu,
+  X,
+  Briefcase,
 } from "lucide-react";
 import type { Dict } from "@/lib/i18n";
 import type { JwtUser } from "@/lib/server-auth";
@@ -33,10 +44,18 @@ export default function AdminSidebar({ lang, t, user }: Props) {
   const links = [
     { href: base, label: t.dash.overview, icon: <LayoutDashboard size={17} />, exact: true },
     { href: `${base}/products`, label: t.dash.products, icon: <Package size={17} /> },
-    { href: `${base}/categories`, label: t.dash.categories ?? "Categories", icon: <Layers size={17} /> },
+    {
+      href: `${base}/categories`,
+      label: t.dash.categories ?? "Categories",
+      icon: <Layers size={17} />,
+    },
     { href: `${base}/inquiries`, label: t.dash.inquiries, icon: <MessageSquare size={17} /> },
     { href: `${base}/users`, label: t.dash.users, icon: <Users size={17} /> },
-    { href: `${base}/partners`, label: t.dash.partners ?? "Partners", icon: <Handshake size={17} /> },
+    {
+      href: `${base}/partners`,
+      label: t.dash.partners ?? "Partners",
+      icon: <Handshake size={17} />,
+    },
     { href: `${base}/news`, label: t.dash.news ?? "News", icon: <Newspaper size={17} /> },
     { href: `${base}/careers`, label: t.dash.careers ?? "Careers", icon: <Briefcase size={17} /> },
     { href: `${base}/settings`, label: t.dash.settings, icon: <Settings size={17} /> },
@@ -44,7 +63,9 @@ export default function AdminSidebar({ lang, t, user }: Props) {
   ];
 
   const isActive = (href: string, exact = false) =>
-    exact ? pathname === href : pathname.startsWith(href) && (exact || href !== base || pathname === base);
+    exact
+      ? pathname === href
+      : pathname.startsWith(href) && (exact || href !== base || pathname === base);
 
   const brand = (
     <span className="sidebar__brand">
@@ -57,7 +78,9 @@ export default function AdminSidebar({ lang, t, user }: Props) {
   );
 
   async function handleLogout() {
-    await logoutFromDb().unwrap().catch(() => {});
+    await logoutFromDb()
+      .unwrap()
+      .catch(() => {});
     dispatch(logout());
     router.push(`/${lang}/login`);
     router.refresh();
@@ -66,10 +89,15 @@ export default function AdminSidebar({ lang, t, user }: Props) {
   const nav = (
     <nav className="sidebar__nav" aria-label="Admin navigation">
       {links.map(({ href, label, icon, exact }) => (
-        <Link key={href} href={href}
+        <Link
+          key={href}
+          href={href}
           className={`sidebar__link${isActive(href, exact) ? " is-active" : ""}`}
-          onClick={() => setMobileOpen(false)}>
-          <span className="sidebar__icon" aria-hidden="true">{icon}</span>
+          onClick={() => setMobileOpen(false)}
+        >
+          <span className="sidebar__icon" aria-hidden="true">
+            {icon}
+          </span>
           <span>{label}</span>
         </Link>
       ))}
@@ -80,26 +108,38 @@ export default function AdminSidebar({ lang, t, user }: Props) {
     <>
       {/* Mobile top bar */}
       <div className="dash-topbar">
-        <button className="sidebar__hamburger" onClick={() => setMobileOpen(true)} aria-label="Open menu">
+        <button
+          className="sidebar__hamburger"
+          onClick={() => setMobileOpen(true)}
+          aria-label="Open menu"
+        >
           <Menu size={22} />
         </button>
-        <Link href={`/${lang}`} className="dash-topbar__logo">{brand}</Link>
+        <Link href={`/${lang}`} className="dash-topbar__logo">
+          {brand}
+        </Link>
       </div>
 
       {/* Desktop sidebar */}
       <aside className="sidebar" aria-label="Admin panel">
         <div className="sidebar__header">
-          <Link href={`/${lang}`} className="sidebar__logo">{brand}</Link>
+          <Link href={`/${lang}`} className="sidebar__logo">
+            {brand}
+          </Link>
         </div>
-        
+
         {nav}
         <div className="sidebar__footer">
           <Link href={`/${lang}`} className="sidebar__link sidebar__link--secondary">
-            <span className="sidebar__icon" aria-hidden="true"><Globe size={17} /></span>
+            <span className="sidebar__icon" aria-hidden="true">
+              <Globe size={17} />
+            </span>
             <span>{t.dash.publicSite}</span>
           </Link>
           <button className="sidebar__link sidebar__link--danger" onClick={handleLogout}>
-            <span className="sidebar__icon" aria-hidden="true"><LogOut size={17} /></span>
+            <span className="sidebar__icon" aria-hidden="true">
+              <LogOut size={17} />
+            </span>
             <span>{t.dash.logout}</span>
           </button>
         </div>
@@ -107,12 +147,25 @@ export default function AdminSidebar({ lang, t, user }: Props) {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="mobile-drawer-overlay" onClick={() => setMobileOpen(false)} aria-hidden="true" />
+        <div
+          className="mobile-drawer-overlay"
+          onClick={() => setMobileOpen(false)}
+          aria-hidden="true"
+        />
       )}
-      <aside className={`sidebar sidebar--mobile${mobileOpen ? " is-open" : ""}`} aria-label="Admin navigation mobile">
+      <aside
+        className={`sidebar sidebar--mobile${mobileOpen ? " is-open" : ""}`}
+        aria-label="Admin navigation mobile"
+      >
         <div className="sidebar__header">
-          <Link href={`/${lang}`} className="sidebar__logo" onClick={() => setMobileOpen(false)}>{brand}</Link>
-          <button className="sidebar__close" onClick={() => setMobileOpen(false)} aria-label="Close menu">
+          <Link href={`/${lang}`} className="sidebar__logo" onClick={() => setMobileOpen(false)}>
+            {brand}
+          </Link>
+          <button
+            className="sidebar__close"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Close menu"
+          >
             <X size={20} />
           </button>
         </div>
@@ -127,12 +180,20 @@ export default function AdminSidebar({ lang, t, user }: Props) {
         </div>
         {nav}
         <div className="sidebar__footer">
-          <Link href={`/${lang}`} className="sidebar__link sidebar__link--secondary" onClick={() => setMobileOpen(false)}>
-            <span className="sidebar__icon" aria-hidden="true"><Globe size={17} /></span>
+          <Link
+            href={`/${lang}`}
+            className="sidebar__link sidebar__link--secondary"
+            onClick={() => setMobileOpen(false)}
+          >
+            <span className="sidebar__icon" aria-hidden="true">
+              <Globe size={17} />
+            </span>
             <span>{t.dash.publicSite}</span>
           </Link>
           <button className="sidebar__link sidebar__link--danger" onClick={handleLogout}>
-            <span className="sidebar__icon" aria-hidden="true"><LogOut size={17} /></span>
+            <span className="sidebar__icon" aria-hidden="true">
+              <LogOut size={17} />
+            </span>
             <span>{t.dash.logout}</span>
           </button>
         </div>

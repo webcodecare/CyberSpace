@@ -41,7 +41,10 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
       <div>
         <div className="dash-page-header">
           <div>
-            <span className="skel skel--xl" style={{ width: 220, marginBottom: 8, display: "block" }} />
+            <span
+              className="skel skel--xl"
+              style={{ width: 220, marginBottom: 8, display: "block" }}
+            />
             <span className="skel skel--sm" style={{ width: 140, display: "block" }} />
           </div>
         </div>
@@ -50,7 +53,10 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
             <div key={i} className="stat-card">
               <span className="skel skel--avatar" />
               <div className="stat-card__body">
-                <span className="skel skel--sm" style={{ width: 90, marginBottom: 6, display: "block" }} />
+                <span
+                  className="skel skel--sm"
+                  style={{ width: 90, marginBottom: 6, display: "block" }}
+                />
                 <span className="skel skel--lg" style={{ width: 40, display: "block" }} />
               </div>
             </div>
@@ -71,7 +77,9 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
                   <th>{t.dash.status}</th>
                 </tr>
               </thead>
-              <tbody><SkeletonTableRows columns={["text", "text", "text", "sm", "badge"]} /></tbody>
+              <tbody>
+                <SkeletonTableRows columns={["text", "text", "text", "sm", "badge"]} />
+              </tbody>
             </table>
           </div>
         </div>
@@ -92,7 +100,10 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
     <div>
       <div className="dash-page-header">
         <div>
-          <h1 className="dash-page-title">{t.dash.welcomeBack}{user?.name ? `, ${user.name}` : ""}</h1>
+          <h1 className="dash-page-title">
+            {t.dash.welcomeBack}
+            {user?.name ? `, ${user.name}` : ""}
+          </h1>
           <p className="dash-page-sub">{t.dash.adminPanel}</p>
         </div>
       </div>
@@ -101,7 +112,17 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
       <div className="stat-grid">
         <div className="stat-card stat-card--blue">
           <div className="stat-card__icon">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
           </div>
           <div className="stat-card__body">
             <p className="stat-card__label">{t.dash.newInquiries}</p>
@@ -110,7 +131,18 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
         </div>
         <div className="stat-card stat-card--amber">
           <div className="stat-card__icon">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
           </div>
           <div className="stat-card__body">
             <p className="stat-card__label">{t.dash.inProgress}</p>
@@ -119,7 +151,18 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
         </div>
         <div className="stat-card stat-card--green">
           <div className="stat-card__icon">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
           </div>
           <div className="stat-card__body">
             <p className="stat-card__label">{t.dash.completed}</p>
@@ -128,7 +171,18 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
         </div>
         <div className="stat-card stat-card--violet">
           <div className="stat-card__icon">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/></svg>
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+              <path d="M3 6h18" />
+            </svg>
           </div>
           <div className="stat-card__body">
             <p className="stat-card__label">{t.dash.totalProducts}</p>
@@ -137,7 +191,20 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
         </div>
         <div className="stat-card stat-card--cyan">
           <div className="stat-card__icon">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
           </div>
           <div className="stat-card__body">
             <p className="stat-card__label">{t.dash.totalUsers}</p>
@@ -145,8 +212,21 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
           </div>
         </div>
         <div className="stat-card" style={{ borderLeft: "4px solid var(--indigo)" }}>
-          <div className="stat-card__icon" style={{ background: "var(--indigo-soft)", color: "var(--indigo)" }}>
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+          <div
+            className="stat-card__icon"
+            style={{ background: "var(--indigo-soft)", color: "var(--indigo)" }}
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
           </div>
           <div className="stat-card__body">
             <p className="stat-card__label">{t.dash.categories ?? "Categories"}</p>
@@ -163,7 +243,18 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
         <div className="dash-quick-grid">
           <Link href={`${base}/products`} className="dash-quick-card">
             <div className="dash-quick-card__icon">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/></svg>
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                <path d="M3 6h18" />
+              </svg>
             </div>
             <div>
               <div className="dash-quick-card__label">{t.dash.products}</div>
@@ -171,8 +262,24 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
             </div>
           </Link>
           <Link href={`${base}/inquiries`} className="dash-quick-card">
-            <div className="dash-quick-card__icon" style={{ background: newCount > 0 ? "rgba(20,87,217,0.12)" : undefined, color: newCount > 0 ? "var(--blue)" : undefined }}>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <div
+              className="dash-quick-card__icon"
+              style={{
+                background: newCount > 0 ? "rgba(20,87,217,0.12)" : undefined,
+                color: newCount > 0 ? "var(--blue)" : undefined,
+              }}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
             </div>
             <div>
               <div className="dash-quick-card__label">{t.dash.inquiries}</div>
@@ -181,7 +288,17 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
           </Link>
           <Link href={`${base}/categories`} className="dash-quick-card">
             <div className="dash-quick-card__icon">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
             </div>
             <div>
               <div className="dash-quick-card__label">{t.dash.categories ?? "Categories"}</div>
@@ -190,7 +307,18 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
           </Link>
           <Link href={`${base}/users`} className="dash-quick-card">
             <div className="dash-quick-card__icon">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+              </svg>
             </div>
             <div>
               <div className="dash-quick-card__label">{t.dash.users}</div>
@@ -199,7 +327,17 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
           </Link>
           <Link href={`${base}/news`} className="dash-quick-card">
             <div className="dash-quick-card__icon">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/></svg>
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
+              </svg>
             </div>
             <div>
               <div className="dash-quick-card__label">{t.dash.news ?? "News"}</div>
@@ -213,15 +351,33 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
       <div className="dash-section">
         <div className="dash-section__head">
           <h2 className="dash-section__title">{t.dash.recentInquiries}</h2>
-          <Link href={`${base}/inquiries`} className="dash-section__link">View all →</Link>
+          <Link href={`${base}/inquiries`} className="dash-section__link">
+            View all →
+          </Link>
         </div>
         {recent.length === 0 ? (
           <div className="dash-empty">
             <div className="dash-empty__icon">
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+              >
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
             </div>
             <p>{t.dash.noData}</p>
-            <Link href={`${base}/inquiries`} className="btn btn--ghost btn--sm dash-empty__cta" style={{ textDecoration: "none" }}>Go to Inquiries</Link>
+            <Link
+              href={`${base}/inquiries`}
+              className="btn btn--ghost btn--sm dash-empty__cta"
+              style={{ textDecoration: "none" }}
+            >
+              Go to Inquiries
+            </Link>
           </div>
         ) : (
           <div className="dash-table-wrap">
@@ -243,7 +399,9 @@ export default function AdminDashboardClient({ lang, t, base }: Props) {
                     <td>{inq.phone}</td>
                     <td>{formatDate(inq.createdAt, lang as Locale)}</td>
                     <td>
-                      <span className={`status-badge status-badge--${inq.status.toLowerCase().replace("_", "-")}`}>
+                      <span
+                        className={`status-badge status-badge--${inq.status.toLowerCase().replace("_", "-")}`}
+                      >
                         {getStatusLabel(inq.status, t)}
                       </span>
                     </td>

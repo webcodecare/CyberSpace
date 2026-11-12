@@ -3,7 +3,13 @@
 import { useEffect, useState } from "react";
 import { toast } from "@/lib/toast";
 
-type ToastItem = { id: number; msg: string; type: "success" | "error" | "info" | "warning"; sub?: string; exiting?: boolean };
+type ToastItem = {
+  id: number;
+  msg: string;
+  type: "success" | "error" | "info" | "warning";
+  sub?: string;
+  exiting?: boolean;
+};
 
 export default function Toaster() {
   const [items, setItems] = useState<ToastItem[]>([]);
@@ -13,7 +19,7 @@ export default function Toaster() {
       const id = Date.now();
       setItems((prev) => [...prev, { id, msg, type, sub }]);
       setTimeout(() => {
-        setItems((prev) => prev.map((t) => t.id === id ? { ...t, exiting: true } : t));
+        setItems((prev) => prev.map((t) => (t.id === id ? { ...t, exiting: true } : t)));
         setTimeout(() => setItems((prev) => prev.filter((t) => t.id !== id)), 350);
       }, 4000);
     });
@@ -24,25 +30,64 @@ export default function Toaster() {
   return (
     <div className="toaster" aria-live="polite">
       {items.map((item) => (
-        <div key={item.id} className={`toast toast--${item.type}${item.exiting ? " toast--exit" : ""}`}>
+        <div
+          key={item.id}
+          className={`toast toast--${item.type}${item.exiting ? " toast--exit" : ""}`}
+        >
           <span className="toast__icon">
             {item.type === "success" && (
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-                <circle cx="12" cy="12" r="10" /><path d="m8 12 3 3 5-5" />
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="m8 12 3 3 5-5" />
               </svg>
             )}
             {item.type === "error" && (
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-                <circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" />
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4M12 16h.01" />
               </svg>
             )}
             {item.type === "info" && (
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-                <circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" />
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4M12 8h.01" />
               </svg>
             )}
             {item.type === "warning" && (
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                viewBox="0 0 24 24"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M12 9v4M12 17h.01M10.3 3.9 2.5 17a1.5 1.5 0 0 0 1.3 2.25h16.4A1.5 1.5 0 0 0 21.5 17L13.7 3.9a1.5 1.5 0 0 0-2.6 0Z" />
               </svg>
             )}
@@ -57,7 +102,15 @@ export default function Toaster() {
             onClick={() => setItems((prev) => prev.filter((t) => t.id !== item.id))}
             aria-label="Close"
           >
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <svg
+              viewBox="0 0 24 24"
+              width="14"
+              height="14"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            >
               <path d="M18 6 6 18M6 6l12 12" />
             </svg>
           </button>

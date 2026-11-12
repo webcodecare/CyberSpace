@@ -7,13 +7,21 @@ const COL_CLASS: Record<SkelCol, string> = {
   badge: "skel--badge",
 };
 
-export default function SkeletonTableRows({ columns, rows = 5 }: { columns: SkelCol[]; rows?: number }) {
+export default function SkeletonTableRows({
+  columns,
+  rows = 5,
+}: {
+  columns: SkelCol[];
+  rows?: number;
+}) {
   return (
     <>
       {Array.from({ length: rows }).map((_, i) => (
         <tr key={i}>
           {columns.map((col, j) => (
-            <td key={j}><span className={`skel ${COL_CLASS[col]}`} /></td>
+            <td key={j}>
+              <span className={`skel ${COL_CLASS[col]}`} />
+            </td>
           ))}
         </tr>
       ))}

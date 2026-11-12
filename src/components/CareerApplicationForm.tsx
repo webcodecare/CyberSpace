@@ -6,7 +6,8 @@ import { useSubmitCareerApplicationMutation } from "@/redux/fetchers/career/care
 import type { Dict } from "@/lib/i18n";
 
 const EMAIL_OK = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-const PHONE_OK = (v: string) => /^\+?[0-9\s()\-]{7,20}$/.test(v) && v.replace(/\D/g, "").length >= 7;
+const PHONE_OK = (v: string) =>
+  /^\+?[0-9\s()\-]{7,20}$/.test(v) && v.replace(/\D/g, "").length >= 7;
 const MAX_RESUME_BYTES = 5 * 1024 * 1024;
 
 export default function CareerApplicationForm({ t }: { t: Dict }) {
@@ -33,7 +34,10 @@ export default function CareerApplicationForm({ t }: { t: Dict }) {
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0] ?? null;
     setErrors((prev) => ({ ...prev, resume: "" }));
-    if (!file) { setResume(null); return; }
+    if (!file) {
+      setResume(null);
+      return;
+    }
     if (file.type !== "application/pdf" || !file.name.toLowerCase().endsWith(".pdf")) {
       setErrors((prev) => ({ ...prev, resume: c.errResumeType }));
       setResume(null);
@@ -50,9 +54,20 @@ export default function CareerApplicationForm({ t }: { t: Dict }) {
   }
 
   function resetForm() {
-    setFullName(""); setEmail(""); setPhone(""); setPosition(""); setCountry("");
-    setLinkedinUrl(""); setPortfolioUrl(""); setYearsExperience(""); setCoverLetter("");
-    setResume(null); setConsent(false); setTrap(""); setErrors({}); setServerError("");
+    setFullName("");
+    setEmail("");
+    setPhone("");
+    setPosition("");
+    setCountry("");
+    setLinkedinUrl("");
+    setPortfolioUrl("");
+    setYearsExperience("");
+    setCoverLetter("");
+    setResume(null);
+    setConsent(false);
+    setTrap("");
+    setErrors({});
+    setServerError("");
     if (fileRef.current) fileRef.current.value = "";
     reset();
   }
@@ -61,7 +76,8 @@ export default function CareerApplicationForm({ t }: { t: Dict }) {
     e.preventDefault();
     setServerError("");
     const next: Record<string, string> = {};
-    if (fullName.trim().length < 2 || !email.trim() || !phone.trim() || !position.trim()) next.required = c.errRequired;
+    if (fullName.trim().length < 2 || !email.trim() || !phone.trim() || !position.trim())
+      next.required = c.errRequired;
     if (email.trim() && !EMAIL_OK(email.trim())) next.email = c.errEmail;
     if (phone.trim() && !PHONE_OK(phone.trim())) next.phone = c.errPhone;
     if (!resume) next.resume = c.errResumeType;
@@ -96,13 +112,24 @@ export default function CareerApplicationForm({ t }: { t: Dict }) {
     return (
       <div className="career-apply-card apply-success">
         <div className="apply-success__icon">
-          <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            width="30"
+            height="30"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M20 6 9 17l-5-5" />
           </svg>
         </div>
         <h2>{c.successTitle}</h2>
         <p>{c.successMsg}</p>
-        <button type="button" className="btn btn--outline" onClick={resetForm}>{c.applyAnother}</button>
+        <button type="button" className="btn btn--outline" onClick={resetForm}>
+          {c.applyAnother}
+        </button>
       </div>
     );
   }
@@ -114,84 +141,183 @@ export default function CareerApplicationForm({ t }: { t: Dict }) {
       <div className="career-apply-grid career-apply-grid--2">
         <div className="field">
           <label htmlFor="ca-name">{c.fullName} *</label>
-          <input id="ca-name" value={fullName} maxLength={120} placeholder={c.fullNamePh}
-            onChange={(e) => setFullName(e.target.value)} disabled={busy} />
+          <input
+            id="ca-name"
+            value={fullName}
+            maxLength={120}
+            placeholder={c.fullNamePh}
+            onChange={(e) => setFullName(e.target.value)}
+            disabled={busy}
+          />
         </div>
         <div className="field">
           <label htmlFor="ca-email">{c.email} *</label>
-          <input id="ca-email" type="email" value={email} maxLength={160} placeholder={c.emailPh}
-            aria-invalid={!!errors.email} onChange={(e) => setEmail(e.target.value)} disabled={busy} />
+          <input
+            id="ca-email"
+            type="email"
+            value={email}
+            maxLength={160}
+            placeholder={c.emailPh}
+            aria-invalid={!!errors.email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={busy}
+          />
           {errors.email && <p className="err">{errors.email}</p>}
         </div>
         <div className="field">
           <label htmlFor="ca-phone">{c.phone} *</label>
-          <input id="ca-phone" type="tel" value={phone} maxLength={24} placeholder={c.phonePh}
-            aria-invalid={!!errors.phone} onChange={(e) => setPhone(e.target.value)} disabled={busy} />
+          <input
+            id="ca-phone"
+            type="tel"
+            value={phone}
+            maxLength={24}
+            placeholder={c.phonePh}
+            aria-invalid={!!errors.phone}
+            onChange={(e) => setPhone(e.target.value)}
+            disabled={busy}
+          />
           {errors.phone && <p className="err">{errors.phone}</p>}
         </div>
         <div className="field">
           <label htmlFor="ca-position">{c.position} *</label>
-          <input id="ca-position" value={position} maxLength={160} placeholder={c.positionPh}
-            onChange={(e) => setPosition(e.target.value)} disabled={busy} />
+          <input
+            id="ca-position"
+            value={position}
+            maxLength={160}
+            placeholder={c.positionPh}
+            onChange={(e) => setPosition(e.target.value)}
+            disabled={busy}
+          />
         </div>
         <div className="field">
           <label htmlFor="ca-country">{c.country}</label>
-          <input id="ca-country" value={country} maxLength={80} placeholder={c.countryPh}
-            onChange={(e) => setCountry(e.target.value)} disabled={busy} />
+          <input
+            id="ca-country"
+            value={country}
+            maxLength={80}
+            placeholder={c.countryPh}
+            onChange={(e) => setCountry(e.target.value)}
+            disabled={busy}
+          />
         </div>
         <div className="field">
           <label htmlFor="ca-years">{c.experience}</label>
-          <input id="ca-years" type="number" min={0} max={60} value={yearsExperience} placeholder={c.experiencePh}
-            onChange={(e) => setYearsExperience(e.target.value)} disabled={busy} />
+          <input
+            id="ca-years"
+            type="number"
+            min={0}
+            max={60}
+            value={yearsExperience}
+            placeholder={c.experiencePh}
+            onChange={(e) => setYearsExperience(e.target.value)}
+            disabled={busy}
+          />
         </div>
         <div className="field">
           <label htmlFor="ca-linkedin">{c.linkedin}</label>
-          <input id="ca-linkedin" type="url" value={linkedinUrl} placeholder={c.linkedinPh}
-            onChange={(e) => setLinkedinUrl(e.target.value)} disabled={busy} />
+          <input
+            id="ca-linkedin"
+            type="url"
+            value={linkedinUrl}
+            placeholder={c.linkedinPh}
+            onChange={(e) => setLinkedinUrl(e.target.value)}
+            disabled={busy}
+          />
         </div>
         <div className="field">
           <label htmlFor="ca-portfolio">{c.portfolio}</label>
-          <input id="ca-portfolio" type="url" value={portfolioUrl} placeholder={c.portfolioPh}
-            onChange={(e) => setPortfolioUrl(e.target.value)} disabled={busy} />
+          <input
+            id="ca-portfolio"
+            type="url"
+            value={portfolioUrl}
+            placeholder={c.portfolioPh}
+            onChange={(e) => setPortfolioUrl(e.target.value)}
+            disabled={busy}
+          />
         </div>
       </div>
 
       <div className="field">
         <label htmlFor="ca-cover">{c.coverLetter}</label>
-        <textarea id="ca-cover" rows={4} maxLength={2000} value={coverLetter} placeholder={c.coverLetterPh}
-          onChange={(e) => setCoverLetter(e.target.value)} disabled={busy} />
+        <textarea
+          id="ca-cover"
+          rows={4}
+          maxLength={2000}
+          value={coverLetter}
+          placeholder={c.coverLetterPh}
+          onChange={(e) => setCoverLetter(e.target.value)}
+          disabled={busy}
+        />
       </div>
 
       <div className="resume-field">
         <label htmlFor="ca-resume">{c.resume} *</label>
         <label className="resume-drop" htmlFor="ca-resume">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, color: "var(--blue)" }}>
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
+          <svg
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ flexShrink: 0, color: "var(--blue)" }}
+          >
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
           </svg>
           <span className="resume-drop__name">{resume ? resume.name : c.resumeChoose}</span>
           <span className="resume-drop__hint">{c.resumeHint}</span>
         </label>
-        <input id="ca-resume" ref={fileRef} type="file" accept="application/pdf" onChange={handleFile}
-          disabled={busy} style={{ display: "none" }} />
+        <input
+          id="ca-resume"
+          ref={fileRef}
+          type="file"
+          accept="application/pdf"
+          onChange={handleFile}
+          disabled={busy}
+          style={{ display: "none" }}
+        />
         {errors.resume && <p className="err">{errors.resume}</p>}
       </div>
 
       {/* Honeypot: hidden from people, filled in by simple bots. */}
       <div className="hp" aria-hidden="true">
         <label htmlFor="ca-site">Website</label>
-        <input id="ca-site" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
+        <input
+          id="ca-site"
+          tabIndex={-1}
+          autoComplete="off"
+          value={trap}
+          onChange={(e) => setTrap(e.target.value)}
+        />
       </div>
 
       <label className="check check--box">
-        <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} disabled={busy} />
+        <input
+          type="checkbox"
+          checked={consent}
+          onChange={(e) => setConsent(e.target.checked)}
+          disabled={busy}
+        />
         <span>{c.privacyConsent}</span>
       </label>
       {errors.consent && <p className="err">{errors.consent}</p>}
       {errors.required && <p className="err">{errors.required}</p>}
       {errors.spam && <p className="err">{errors.spam}</p>}
-      {serverError && <p className="err" role="alert">{serverError}</p>}
+      {serverError && (
+        <p className="err" role="alert">
+          {serverError}
+        </p>
+      )}
 
-      <button type="submit" className="btn btn--primary btn--block" disabled={busy} style={{ marginTop: 10 }}>
+      <button
+        type="submit"
+        className="btn btn--primary btn--block"
+        disabled={busy}
+        style={{ marginTop: 10 }}
+      >
         {busy ? c.submitting : c.submit}
       </button>
     </form>

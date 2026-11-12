@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from "react";
 import type { Dict } from "@/lib/i18n";
-import { useGetSettingsQuery, useUpdateSettingsMutation } from "@/redux/fetchers/settings/settingsApi";
+import {
+  useGetSettingsQuery,
+  useUpdateSettingsMutation,
+} from "@/redux/fetchers/settings/settingsApi";
 
 export default function SettingsClient({ t }: { t: Dict }) {
   const { data: settings, isLoading } = useGetSettingsQuery();

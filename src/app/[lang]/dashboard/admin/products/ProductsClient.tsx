@@ -14,11 +14,25 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogBody, DialogFooter, DialogForm,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogBody,
+  DialogFooter,
+  DialogForm,
 } from "@/components/ui/dialog";
 import {
-  Package, Tag, CircleDollarSign, ImageIcon, FileText,
-  Check, X, AlertCircle, CheckCircle2,
+  Package,
+  Tag,
+  CircleDollarSign,
+  ImageIcon,
+  FileText,
+  Check,
+  X,
+  AlertCircle,
+  CheckCircle2,
 } from "lucide-react";
 import type { PublicProduct } from "@/data/catalog";
 import type { Dict } from "@/lib/i18n";
@@ -27,22 +41,43 @@ type LangKey = "EN" | "AZ" | "RU";
 const LANGS: LangKey[] = ["EN", "AZ", "RU"];
 const CURRENCIES = ["USD", "AZN", "EUR", "GBP"];
 
-interface TranslationForm { name: string; description: string; }
+interface TranslationForm {
+  name: string;
+  description: string;
+}
 interface FormState {
-  sku: string; brand: string; category: string; imageUrl: string;
-  price: string; currency: string; stock: string;
-  EN: TranslationForm; AZ: TranslationForm; RU: TranslationForm;
+  sku: string;
+  brand: string;
+  category: string;
+  imageUrl: string;
+  price: string;
+  currency: string;
+  stock: string;
+  EN: TranslationForm;
+  AZ: TranslationForm;
+  RU: TranslationForm;
 }
 
 const emptyTrans = (): TranslationForm => ({ name: "", description: "" });
 const emptyForm = (firstCategory = ""): FormState => ({
-  sku: "", brand: "", category: firstCategory, imageUrl: "", price: "", currency: "USD", stock: "",
-  EN: emptyTrans(), AZ: emptyTrans(), RU: emptyTrans(),
+  sku: "",
+  brand: "",
+  category: firstCategory,
+  imageUrl: "",
+  price: "",
+  currency: "USD",
+  stock: "",
+  EN: emptyTrans(),
+  AZ: emptyTrans(),
+  RU: emptyTrans(),
 });
 
 function productToForm(p: PublicProduct): FormState {
   return {
-    sku: p.sku, brand: p.brand ?? "", category: p.category, imageUrl: p.imageUrl ?? "",
+    sku: p.sku,
+    brand: p.brand ?? "",
+    category: p.category,
+    imageUrl: p.imageUrl ?? "",
     price: p.price != null ? String(p.price) : "",
     currency: p.currency ?? "USD",
     stock: p.stock != null ? String(p.stock) : "",
@@ -61,19 +96,25 @@ function formToPayload(f: FormState): CreateProductInput {
     price: f.price ? parseFloat(f.price) : null,
     currency: f.currency || null,
     stock: f.stock ? parseInt(f.stock) : null,
-    translations: LANGS
-      .filter((l) => f[l].name.trim())
-      .map((l) => ({
-        lang: l,
-        name: f[l].name.trim(),
-        description: f[l].description.trim() || undefined,
-      })),
+    translations: LANGS.filter((l) => f[l].name.trim()).map((l) => ({
+      lang: l,
+      name: f[l].name.trim(),
+      description: f[l].description.trim() || undefined,
+    })),
   };
 }
 
 /* ── Small layout helpers ────────────────────────────────────── */
 
-function SectionHead({ icon, label, first = false }: { icon: React.ReactNode; label: string; first?: boolean }) {
+function SectionHead({
+  icon,
+  label,
+  first = false,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  first?: boolean;
+}) {
   return (
     <div className="pf-section-head" style={first ? { marginTop: 0 } : { marginTop: 24 }}>
       <span className="pf-section-icon">{icon}</span>
@@ -83,14 +124,26 @@ function SectionHead({ icon, label, first = false }: { icon: React.ReactNode; la
   );
 }
 
-function PfField({ id, label, required, children }: {
-  id?: string; label: string; required?: boolean; children: React.ReactNode;
+function PfField({
+  id,
+  label,
+  required,
+  children,
+}: {
+  id?: string;
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
 }) {
   return (
     <div className="pf-field">
       <label className="pf-label" htmlFor={id}>
         {label}
-        {required && <span className="pf-req" aria-hidden="true">*</span>}
+        {required && (
+          <span className="pf-req" aria-hidden="true">
+            *
+          </span>
+        )}
       </label>
       {children}
     </div>
@@ -117,13 +170,26 @@ export default function ProductsClient({ t }: { t: Dict }) {
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   function openCreate() {
-    setEditing(null); setForm(emptyForm(categories[0]?.slug ?? "")); setError(""); setSuccess(""); setActiveLang("EN"); setOpen(true);
+    setEditing(null);
+    setForm(emptyForm(categories[0]?.slug ?? ""));
+    setError("");
+    setSuccess("");
+    setActiveLang("EN");
+    setOpen(true);
   }
   function openEdit(p: PublicProduct) {
-    setEditing(p); setForm(productToForm(p)); setError(""); setSuccess(""); setActiveLang("EN"); setOpen(true);
+    setEditing(p);
+    setForm(productToForm(p));
+    setError("");
+    setSuccess("");
+    setActiveLang("EN");
+    setOpen(true);
   }
   function handleOpenChange(v: boolean) {
-    if (!v) { setOpen(false); setEditing(null); }
+    if (!v) {
+      setOpen(false);
+      setEditing(null);
+    }
   }
   function setField(key: keyof Omit<FormState, "EN" | "AZ" | "RU">, value: string) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -135,8 +201,14 @@ export default function ProductsClient({ t }: { t: Dict }) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!form.sku.trim()) { setError("SKU is required."); return; }
-    if (!form.EN.name.trim()) { setError("English name is required."); return; }
+    if (!form.sku.trim()) {
+      setError("SKU is required.");
+      return;
+    }
+    if (!form.EN.name.trim()) {
+      setError("English name is required.");
+      return;
+    }
     try {
       const payload = formToPayload(form);
       if (editing) {
@@ -146,7 +218,11 @@ export default function ProductsClient({ t }: { t: Dict }) {
         await create(payload).unwrap();
         setSuccess("Product created successfully.");
       }
-      setTimeout(() => { setSuccess(""); setOpen(false); setEditing(null); }, 1400);
+      setTimeout(() => {
+        setSuccess("");
+        setOpen(false);
+        setEditing(null);
+      }, 1400);
     } catch (err: unknown) {
       const msg = (err as { data?: { message?: string } })?.data?.message;
       setError(msg ?? "Save failed. Please try again.");
@@ -177,11 +253,28 @@ export default function ProductsClient({ t }: { t: Dict }) {
       <div className="dash-page-header">
         <div>
           <h1 className="dash-page-title">{t.dash.products}</h1>
-          <p className="dash-page-sub">{t.dash.syncStatus} — {t.common.syncedFrom1C}</p>
+          <p className="dash-page-sub">
+            {t.dash.syncStatus} — {t.common.syncedFrom1C}
+          </p>
         </div>
-        <button type="button" className="btn btn--primary btn--sm" onClick={openCreate}
-          style={{ display: "flex", alignItems: "center", gap: 7, flexShrink: 0 }}>
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg>
+        <button
+          type="button"
+          className="btn btn--primary btn--sm"
+          onClick={openCreate}
+          style={{ display: "flex", alignItems: "center", gap: 7, flexShrink: 0 }}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="13"
+            height="13"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          >
+            <line x1="12" x2="12" y1="5" y2="19" />
+            <line x1="5" x2="19" y1="12" y2="12" />
+          </svg>
           {t.dash.add ?? "Add Product"}
         </button>
       </div>
@@ -190,20 +283,45 @@ export default function ProductsClient({ t }: { t: Dict }) {
       {isLoading ? (
         <div className="dash-table-wrap">
           <table className="dash-table">
-            <thead><tr>
-              <th>Image</th><th>SKU</th><th>Name</th><th>Brand</th><th>Category</th><th>Stock</th><th>Price</th><th>Actions</th>
-            </tr></thead>
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Brand</th>
+                <th>Category</th>
+                <th>Stock</th>
+                <th>Price</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
             <tbody>
               {Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i}>
-                  <td><span className="skel skel--thumb" /></td>
-                  <td><span className="skel skel--md" style={{ width: 70 }} /></td>
-                  <td><span className="skel skel--md" style={{ width: "80%" }} /></td>
-                  <td><span className="skel skel--sm" style={{ width: 60 }} /></td>
-                  <td><span className="skel skel--badge" /></td>
-                  <td><span className="skel skel--sm" style={{ width: 30 }} /></td>
-                  <td><span className="skel skel--sm" style={{ width: 60 }} /></td>
-                  <td><span className="skel skel--badge" /></td>
+                  <td>
+                    <span className="skel skel--thumb" />
+                  </td>
+                  <td>
+                    <span className="skel skel--md" style={{ width: 70 }} />
+                  </td>
+                  <td>
+                    <span className="skel skel--md" style={{ width: "80%" }} />
+                  </td>
+                  <td>
+                    <span className="skel skel--sm" style={{ width: 60 }} />
+                  </td>
+                  <td>
+                    <span className="skel skel--badge" />
+                  </td>
+                  <td>
+                    <span className="skel skel--sm" style={{ width: 30 }} />
+                  </td>
+                  <td>
+                    <span className="skel skel--sm" style={{ width: 60 }} />
+                  </td>
+                  <td>
+                    <span className="skel skel--badge" />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -211,13 +329,26 @@ export default function ProductsClient({ t }: { t: Dict }) {
         </div>
       ) : products.length === 0 ? (
         <div className="dash-empty">
-          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" style={{ opacity: 0.3 }}>
-            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-            <line x1="12" x2="12" y1="22.08" y2="12"/>
+          <svg
+            viewBox="0 0 24 24"
+            width="36"
+            height="36"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+            style={{ opacity: 0.3 }}
+          >
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+            <line x1="12" x2="12" y1="22.08" y2="12" />
           </svg>
           <p>{t.dash.noData}</p>
-          <button type="button" className="btn btn--ghost btn--sm dash-empty__cta" onClick={openCreate}>
+          <button
+            type="button"
+            className="btn btn--ghost btn--sm dash-empty__cta"
+            onClick={openCreate}
+          >
             {t.dash.add ?? "Add Product"}
           </button>
         </div>
@@ -240,23 +371,72 @@ export default function ProductsClient({ t }: { t: Dict }) {
               {products.map((p) => (
                 <tr key={p.id}>
                   <td>
-                    {p.imageUrl
-                      ? <img src={p.imageUrl} alt={p.name} className="dash-thumb" />
-                      : <div className="dash-thumb-placeholder"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
-                    }
+                    {p.imageUrl ? (
+                      <img src={p.imageUrl} alt={p.name} className="dash-thumb" />
+                    ) : (
+                      <div className="dash-thumb-placeholder">
+                        <svg
+                          viewBox="0 0 24 24"
+                          width="14"
+                          height="14"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <rect x="3" y="3" width="18" height="18" rx="2" />
+                          <circle cx="8.5" cy="8.5" r="1.5" />
+                          <polyline points="21 15 16 10 5 21" />
+                        </svg>
+                      </div>
+                    )}
                   </td>
-                  <td style={{ maxWidth: 160 }}><code className="dash-code" style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={p.sku}>{p.sku}</code></td>
-                  <td><span className="dash-name">{p.name}</span></td>
+                  <td style={{ maxWidth: 160 }}>
+                    <code
+                      className="dash-code"
+                      style={{
+                        display: "block",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                      title={p.sku}
+                    >
+                      {p.sku}
+                    </code>
+                  </td>
+                  <td>
+                    <span className="dash-name">{p.name}</span>
+                  </td>
                   <td>{p.brand || "—"}</td>
                   <td>
-                    {(() => { const name = categories.find((c) => c.slug === p.category)?.nameEN ?? p.category; return <span className="dash-pill" title={name}>{name}</span>; })()}
+                    {(() => {
+                      const name =
+                        categories.find((c) => c.slug === p.category)?.nameEN ?? p.category;
+                      return (
+                        <span className="dash-pill" title={name}>
+                          {name}
+                        </span>
+                      );
+                    })()}
                   </td>
                   <td>{p.stock ?? "—"}</td>
-                  <td style={{ whiteSpace: "nowrap" }}>{p.price != null ? `${p.price} ${p.currency ?? ""}` : "—"}</td>
+                  <td style={{ whiteSpace: "nowrap" }}>
+                    {p.price != null ? `${p.price} ${p.currency ?? ""}` : "—"}
+                  </td>
                   <td>
                     <div className="dash-actions">
-                      <Button type="button" variant="outline" size="sm" onClick={() => openEdit(p)}>{t.dash.edit ?? "Edit"}</Button>
-                      <Button type="button" variant="destructive" size="sm" disabled={deleting} onClick={() => promptDelete(p.id)}>{t.dash.delete ?? "Delete"}</Button>
+                      <Button type="button" variant="outline" size="sm" onClick={() => openEdit(p)}>
+                        {t.dash.edit ?? "Edit"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        disabled={deleting}
+                        onClick={() => promptDelete(p.id)}
+                      >
+                        {t.dash.delete ?? "Delete"}
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -280,16 +460,22 @@ export default function ProductsClient({ t }: { t: Dict }) {
       {/* ── Add / Edit modal ── */}
       <Dialog open={open} onOpenChange={handleOpenChange}>
         <DialogContent size="xl" onInteractOutside={(e) => e.preventDefault()}>
-
           {/* Header */}
           <DialogHeader>
             <div style={{ display: "flex", alignItems: "center", gap: 13 }}>
-              <div style={{
-                width: 38, height: 38, borderRadius: 10, flexShrink: 0,
-                background: "linear-gradient(135deg, #1457d9 0%, #2f6bff 100%)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                boxShadow: "0 4px 14px rgba(20,87,217,0.35)",
-              }}>
+              <div
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 10,
+                  flexShrink: 0,
+                  background: "linear-gradient(135deg, #1457d9 0%, #2f6bff 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 4px 14px rgba(20,87,217,0.35)",
+                }}
+              >
                 <Package size={18} color="#fff" />
               </div>
               <div>
@@ -308,7 +494,6 @@ export default function ProductsClient({ t }: { t: Dict }) {
           {/* Form */}
           <DialogForm id="product-form" onSubmit={handleSubmit} noValidate>
             <DialogBody>
-
               {/* Alerts */}
               {error && (
                 <div className="pf-alert pf-alert--error" role="alert">
@@ -359,7 +544,9 @@ export default function ProductsClient({ t }: { t: Dict }) {
                   >
                     {categories.length === 0 && <option value="">— no categories —</option>}
                     {categories.map((c) => (
-                      <option key={c.slug} value={c.slug}>{c.nameEN}</option>
+                      <option key={c.slug} value={c.slug}>
+                        {c.nameEN}
+                      </option>
                     ))}
                   </select>
                 </PfField>
@@ -393,7 +580,9 @@ export default function ProductsClient({ t }: { t: Dict }) {
                     disabled={busy}
                   >
                     {CURRENCIES.map((c) => (
-                      <option key={c} value={c}>{c}</option>
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
                     ))}
                   </select>
                 </PfField>
@@ -425,7 +614,16 @@ export default function ProductsClient({ t }: { t: Dict }) {
               <SectionHead icon={<FileText size={12} />} label="Product Details" />
 
               {/* Language tabs */}
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18, flexWrap: "wrap", gap: 10 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: 18,
+                  flexWrap: "wrap",
+                  gap: 10,
+                }}
+              >
                 <div className="pf-lang-tabs" role="tablist" aria-label="Language">
                   {LANGS.map((l) => (
                     <button
@@ -447,19 +645,24 @@ export default function ProductsClient({ t }: { t: Dict }) {
 
               {/* Language panels */}
               {LANGS.map((l) => (
-                <div key={l} style={{ display: activeLang === l ? "flex" : "none", flexDirection: "column", gap: 16 }}>
-                  <PfField
-                    id={`pr-name-${l}`}
-                    label={`Product Name · ${l}`}
-                    required={l === "EN"}
-                  >
+                <div
+                  key={l}
+                  style={{
+                    display: activeLang === l ? "flex" : "none",
+                    flexDirection: "column",
+                    gap: 16,
+                  }}
+                >
+                  <PfField id={`pr-name-${l}`} label={`Product Name · ${l}`} required={l === "EN"}>
                     <input
                       id={`pr-name-${l}`}
                       className="pf-input"
                       value={form[l].name}
                       onChange={(e) => setTransField(l, "name", e.target.value)}
                       disabled={busy}
-                      placeholder={l === "EN" ? "Full product name in English" : `Name in ${l} (optional)`}
+                      placeholder={
+                        l === "EN" ? "Full product name in English" : `Name in ${l} (optional)`
+                      }
                     />
                   </PfField>
                   <PfField label={`Description · ${l}`}>
@@ -468,7 +671,9 @@ export default function ProductsClient({ t }: { t: Dict }) {
                       value={form[l].description}
                       onChange={(e) => setTransField(l, "description", e.target.value)}
                       disabled={busy}
-                      placeholder={l === "EN" ? "Describe this product…" : `Description in ${l} (optional)`}
+                      placeholder={
+                        l === "EN" ? "Describe this product…" : `Description in ${l} (optional)`
+                      }
                     />
                   </PfField>
                 </div>
@@ -496,8 +701,17 @@ export default function ProductsClient({ t }: { t: Dict }) {
               >
                 {busy ? (
                   <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{ animation: "spin 0.8s linear infinite" }}>
-                      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      style={{ animation: "spin 0.8s linear infinite" }}
+                    >
+                      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
                     </svg>
                     Saving…
                   </>

@@ -9,7 +9,11 @@ import {
   type Inquiry,
 } from "@/redux/fetchers/inquiry/inquiryApi";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogBody,
 } from "@/components/ui/dialog";
 import { MessageSquare, User, Phone, Package, Calendar, X } from "lucide-react";
 
@@ -44,7 +48,11 @@ export default function InquiriesClient({ lang, t }: { lang: string; t: Dict }) 
     if (filter !== "ALL" && i.status !== filter) return false;
     if (search) {
       const q = search.toLowerCase();
-      return i.name.toLowerCase().includes(q) || i.phone.includes(q) || getProductName(i, lang).toLowerCase().includes(q);
+      return (
+        i.name.toLowerCase().includes(q) ||
+        i.phone.includes(q) ||
+        getProductName(i, lang).toLowerCase().includes(q)
+      );
     }
     return true;
   });
@@ -53,7 +61,7 @@ export default function InquiriesClient({ lang, t }: { lang: string; t: Dict }) 
     setUpdatingId(id);
     try {
       await updateInquiry({ id, status }).unwrap();
-      if (selected?.id === id) setSelected((prev) => prev ? { ...prev, status } : prev);
+      if (selected?.id === id) setSelected((prev) => (prev ? { ...prev, status } : prev));
     } catch {
       // silent
     } finally {
@@ -71,14 +79,20 @@ export default function InquiriesClient({ lang, t }: { lang: string; t: Dict }) 
       </div>
       <div className="dash-toolbar">
         <input
-          type="text" className="dash-search" placeholder={t.dash.search}
-          value={search} onChange={(e) => setSearch(e.target.value)}
+          type="text"
+          className="dash-search"
+          placeholder={t.dash.search}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
         <div className="dash-filters">
           {STATUSES.map((s) => (
-            <button key={s} type="button"
+            <button
+              key={s}
+              type="button"
               className={`dash-filter-btn${filter === s ? " is-active" : ""}`}
-              onClick={() => setFilter(s)}>
+              onClick={() => setFilter(s)}
+            >
               {s === "ALL" ? t.dash.filterAll : statusLabel(s, t)}
             </button>
           ))}
@@ -88,17 +102,41 @@ export default function InquiriesClient({ lang, t }: { lang: string; t: Dict }) 
       {isLoading ? (
         <div className="dash-table-wrap">
           <table className="dash-table">
-            <thead><tr><th>#</th><th>{t.dash.product}</th><th>{t.dash.customer}</th><th>{t.dash.phone}</th><th>{t.dash.date}</th><th>{t.dash.status}</th><th></th></tr></thead>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>{t.dash.product}</th>
+                <th>{t.dash.customer}</th>
+                <th>{t.dash.phone}</th>
+                <th>{t.dash.date}</th>
+                <th>{t.dash.status}</th>
+                <th></th>
+              </tr>
+            </thead>
             <tbody>
               {Array.from({ length: 5 }).map((_, i) => (
                 <tr key={i}>
-                  <td><span className="skel skel--sm" style={{ width: 24 }} /></td>
-                  <td><span className="skel skel--md" /></td>
-                  <td><span className="skel skel--md" /></td>
-                  <td><span className="skel skel--sm" /></td>
-                  <td><span className="skel skel--sm" /></td>
-                  <td><span className="skel skel--badge" /></td>
-                  <td><span className="skel skel--badge" style={{ width: 32 }} /></td>
+                  <td>
+                    <span className="skel skel--sm" style={{ width: 24 }} />
+                  </td>
+                  <td>
+                    <span className="skel skel--md" />
+                  </td>
+                  <td>
+                    <span className="skel skel--md" />
+                  </td>
+                  <td>
+                    <span className="skel skel--sm" />
+                  </td>
+                  <td>
+                    <span className="skel skel--sm" />
+                  </td>
+                  <td>
+                    <span className="skel skel--badge" />
+                  </td>
+                  <td>
+                    <span className="skel skel--badge" style={{ width: 32 }} />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -106,7 +144,18 @@ export default function InquiriesClient({ lang, t }: { lang: string; t: Dict }) 
         </div>
       ) : filtered.length === 0 ? (
         <div className="dash-empty">
-          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ opacity: 0.3 }}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <svg
+            viewBox="0 0 24 24"
+            width="36"
+            height="36"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            style={{ opacity: 0.3 }}
+          >
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
           <p>{t.dash.noData}</p>
         </div>
       ) : (
@@ -127,7 +176,9 @@ export default function InquiriesClient({ lang, t }: { lang: string; t: Dict }) 
               {filtered.map((inq) => (
                 <tr key={inq.id} style={{ cursor: "pointer" }} onClick={() => setSelected(inq)}>
                   <td className="dash-table__id">{inq.id}</td>
-                  <td><span className="dash-name">{getProductName(inq, lang)}</span></td>
+                  <td>
+                    <span className="dash-name">{getProductName(inq, lang)}</span>
+                  </td>
                   <td>{inq.name}</td>
                   <td>{inq.phone}</td>
                   <td>{formatDate(inq.createdAt, lang as Locale)}</td>
@@ -149,7 +200,10 @@ export default function InquiriesClient({ lang, t }: { lang: string; t: Dict }) 
                         type="button"
                         className="inq-view-btn"
                         title="View details"
-                        onClick={(e) => { e.stopPropagation(); setSelected(inq); }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelected(inq);
+                        }}
                       >
                         <MessageSquare size={15} />
                       </button>
@@ -163,16 +217,28 @@ export default function InquiriesClient({ lang, t }: { lang: string; t: Dict }) 
       )}
 
       {/* Inquiry Detail Modal */}
-      <Dialog open={!!selected} onOpenChange={(open) => { if (!open) setSelected(null); }}>
+      <Dialog
+        open={!!selected}
+        onOpenChange={(open) => {
+          if (!open) setSelected(null);
+        }}
+      >
         <DialogContent size="default">
           <DialogHeader>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{
-                width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-                background: "linear-gradient(135deg, #1457d9 0%, #2f6bff 100%)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                boxShadow: "0 4px 12px rgba(20,87,217,0.3)",
-              }}>
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 10,
+                  flexShrink: 0,
+                  background: "linear-gradient(135deg, #1457d9 0%, #2f6bff 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 4px 12px rgba(20,87,217,0.3)",
+                }}
+              >
                 <MessageSquare size={16} color="#fff" />
               </div>
               <div>
@@ -187,10 +253,20 @@ export default function InquiriesClient({ lang, t }: { lang: string; t: Dict }) 
           <DialogBody>
             {selected && (
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-
                 {/* Status badge + update */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
-                  <span className={`status-badge ${statusClass(selected.status)}`} style={{ fontSize: ".82rem", padding: "4px 12px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 12,
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <span
+                    className={`status-badge ${statusClass(selected.status)}`}
+                    style={{ fontSize: ".82rem", padding: "4px 12px" }}
+                  >
                     {statusLabel(selected.status, t)}
                   </span>
                   <select
@@ -211,21 +287,32 @@ export default function InquiriesClient({ lang, t }: { lang: string; t: Dict }) 
                 {/* Info rows */}
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                   <div className="inq-detail-row">
-                    <span className="inq-detail-icon"><User size={14} /></span>
+                    <span className="inq-detail-icon">
+                      <User size={14} />
+                    </span>
                     <div>
                       <p className="inq-detail-label">Customer</p>
                       <p className="inq-detail-value">{selected.name}</p>
                     </div>
                   </div>
                   <div className="inq-detail-row">
-                    <span className="inq-detail-icon"><Phone size={14} /></span>
+                    <span className="inq-detail-icon">
+                      <Phone size={14} />
+                    </span>
                     <div>
                       <p className="inq-detail-label">Phone</p>
-                      <a href={`tel:${selected.phone}`} className="inq-detail-value inq-detail-value--link">{selected.phone}</a>
+                      <a
+                        href={`tel:${selected.phone}`}
+                        className="inq-detail-value inq-detail-value--link"
+                      >
+                        {selected.phone}
+                      </a>
                     </div>
                   </div>
                   <div className="inq-detail-row">
-                    <span className="inq-detail-icon"><Package size={14} /></span>
+                    <span className="inq-detail-icon">
+                      <Package size={14} />
+                    </span>
                     <div>
                       <p className="inq-detail-label">Product</p>
                       <p className="inq-detail-value">{getProductName(selected, lang)}</p>
@@ -233,10 +320,14 @@ export default function InquiriesClient({ lang, t }: { lang: string; t: Dict }) 
                   </div>
                   {selected.submittedBy && (
                     <div className="inq-detail-row">
-                      <span className="inq-detail-icon"><Calendar size={14} /></span>
+                      <span className="inq-detail-icon">
+                        <Calendar size={14} />
+                      </span>
                       <div>
                         <p className="inq-detail-label">Submitted by</p>
-                        <p className="inq-detail-value">{selected.submittedBy.name ?? selected.submittedBy.email}</p>
+                        <p className="inq-detail-value">
+                          {selected.submittedBy.name ?? selected.submittedBy.email}
+                        </p>
                       </div>
                     </div>
                   )}
@@ -247,14 +338,18 @@ export default function InquiriesClient({ lang, t }: { lang: string; t: Dict }) 
                   <>
                     <div style={{ height: 1, background: "var(--border)" }} />
                     <div>
-                      <p className="inq-detail-label" style={{ marginBottom: 8 }}>Message</p>
+                      <p className="inq-detail-label" style={{ marginBottom: 8 }}>
+                        Message
+                      </p>
                       <div className="inq-message-box">{selected.message}</div>
                     </div>
                   </>
                 )}
 
                 {!selected.message && (
-                  <p style={{ color: "var(--muted)", fontSize: ".85rem", fontStyle: "italic" }}>No message provided.</p>
+                  <p style={{ color: "var(--muted)", fontSize: ".85rem", fontStyle: "italic" }}>
+                    No message provided.
+                  </p>
                 )}
               </div>
             )}
