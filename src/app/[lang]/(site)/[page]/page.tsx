@@ -1,3 +1,4 @@
+import OfficeMap from "@/components/OfficeMap";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
@@ -895,6 +896,20 @@ export default async function InfoPage({
                 ))}
               </div>
             </div>
+          </section>
+
+          <section className="container section office-map-section">
+            <FadeUp>
+              <OfficeMap
+                title={{ en: "Our Office", az: "Ofisimiz", ru: "Наш офис" }[L]}
+                directionsLabel={{ en: "Get Directions", az: "Yol tarifi al", ru: "Построить маршрут" }[L]}
+                unavailableLabel={{
+                  en: "The map is currently unavailable.",
+                  az: "Xəritə hazırda əlçatan deyil.",
+                  ru: "Карта сейчас недоступна.",
+                }[L]}
+              />
+            </FadeUp>
           </section>
 
           <section className="info-cta-band">

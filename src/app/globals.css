@@ -3533,8 +3533,17 @@ a.partner-card {
   line-height: 1.75;
   margin: 0;
 }
+/* Photo and article text share one width token so their left/right edges align exactly. */
+/* Scoped under .news-detail so it also beats Tailwind's generated `.container { width: 100% }`. */
+.news-detail .news-detail__img-wrap,
+.news-detail .news-detail__body {
+  --news-col: min(900px, calc(100% - 40px));
+  width: var(--news-col);
+  max-width: none;
+  padding-inline: 0;
+  margin-inline: auto;
+}
 .news-detail__img-wrap {
-  max-width: 900px;
   margin-inline: auto;
   margin-bottom: 48px;
   border-radius: var(--radius-xl);
@@ -3553,10 +3562,6 @@ a.partner-card {
   width: 100%;
   aspect-ratio: 16/9;
   background: linear-gradient(135deg, #0f2044 0%, #1457d9 50%, #0ea5e9 100%);
-}
-.news-detail__body {
-  max-width: 720px;
-  margin-inline: auto;
 }
 .news-detail__prose {
   font-size: 1.04rem;
@@ -7132,4 +7137,259 @@ td .ui-select-trigger {
   to {
     opacity: 1;
   }
+}
+
+/* ── Contact: office map ─────────────────────────────────────── */
+.office-map {
+  position: relative;
+}
+.office-map__frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: clamp(260px, 42vw, 460px);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--blue-soft);
+  box-shadow: 0 10px 30px rgba(10, 27, 61, 0.08);
+  cursor: pointer;
+}
+.office-map__frame--fallback {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 8px;
+  color: var(--muted);
+  cursor: default;
+}
+.office-map__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease), transform 0.6s var(--ease);
+}
+.office-map__img.is-loaded {
+  opacity: 1;
+}
+.office-map__frame:hover .office-map__img {
+  transform: scale(1.02);
+}
+.office-map__skeleton {
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+}
+.office-map__card {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: calc(100% - 32px);
+  padding: 12px 14px;
+  background: var(--glass, rgba(255, 255, 255, 0.92));
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 24px rgba(10, 27, 61, 0.12);
+}
+.office-map__pin {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+.office-map__text {
+  display: grid;
+  min-width: 0;
+  font-size: 0.85rem;
+}
+.office-map__text span {
+  color: var(--muted);
+}
+.office-map__btn {
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .office-map__frame {
+    height: 280px;
+  }
+  .office-map__card {
+    position: static;
+    margin-top: 12px;
+    max-width: none;
+    flex-wrap: wrap;
+    box-shadow: none;
+  }
+  .office-map__btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+}
+
+/* ── Home: Partners carousel ─────────────────────────────────── */
+.pcar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pcar__viewport {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  padding-block: 44px;
+  cursor: grab;
+  touch-action: pan-y; /* vertical page scroll stays native; horizontal is our swipe */
+  user-select: none;
+  -webkit-user-select: none;
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.pcar__viewport:active {
+  cursor: grabbing;
+}
+.pcar__track {
+  display: flex;
+  width: max-content;
+  touch-action: pan-y;
+  will-change: transform;
+}
+.pcar__item {
+  flex: 0 0 auto;
+  width: 170px;
+  padding: 0 10px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  touch-action: pan-y;
+  will-change: transform, opacity;
+  transition: filter 0.3s var(--ease);
+}
+.pcar__item:hover .pcar__logo {
+  box-shadow: 0 10px 28px rgba(20, 87, 217, 0.18);
+  border-color: var(--blue-mid);
+}
+.pcar__item:focus-visible {
+  outline: none;
+}
+.pcar__item:focus-visible .pcar__logo {
+  box-shadow: 0 0 0 3px rgba(47, 107, 255, 0.35);
+  border-color: var(--blue);
+}
+.pcar__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  padding: 18px;
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.pcar__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+.pcar__fallback {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--navy);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.pcar__nav {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--blue);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.pcar__nav:hover {
+  background: var(--blue);
+  color: #fff;
+}
+@media (max-width: 640px) {
+  .pcar__item {
+    width: 128px;
+    padding: 0 7px;
+  }
+  .pcar__logo {
+    padding: 12px;
+  }
+  .pcar__viewport {
+    padding-block: 34px;
+  }
+  .pcar__nav {
+    display: none; /* swipe on touch devices */
+  }
+}
+.pmodal__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.pmodal__logo {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.pmodal__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.pmodal__cat {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+.pmodal__sec {
+  margin-bottom: 16px;
+}
+.pmodal__sec h4 {
+  margin: 0 0 4px;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+.pmodal__sec p {
+  margin: 0;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+.pmodal__link {
+  display: inline-flex;
+  gap: 6px;
 }

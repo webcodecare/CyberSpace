@@ -37,6 +37,12 @@ const emptyForm = (): CreatePartnerInput => ({
   descEN: "",
   descAZ: "",
   descRU: "",
+  categoryEN: "",
+  categoryAZ: "",
+  categoryRU: "",
+  suppliesEN: "",
+  suppliesAZ: "",
+  suppliesRU: "",
   isActive: true,
   order: 0,
 });
@@ -49,6 +55,12 @@ function partnerToForm(p: Partner): CreatePartnerInput {
     descEN: p.descEN ?? "",
     descAZ: p.descAZ ?? "",
     descRU: p.descRU ?? "",
+    categoryEN: p.categoryEN ?? "",
+    categoryAZ: p.categoryAZ ?? "",
+    categoryRU: p.categoryRU ?? "",
+    suppliesEN: p.suppliesEN ?? "",
+    suppliesAZ: p.suppliesAZ ?? "",
+    suppliesRU: p.suppliesRU ?? "",
     isActive: p.isActive,
     order: p.order,
   };
@@ -62,12 +74,20 @@ function cleanPayload(form: CreatePartnerInput): CreatePartnerInput {
     descEN: form.descEN?.trim() || null,
     descAZ: form.descAZ?.trim() || null,
     descRU: form.descRU?.trim() || null,
+    categoryEN: form.categoryEN?.trim() || null,
+    categoryAZ: form.categoryAZ?.trim() || null,
+    categoryRU: form.categoryRU?.trim() || null,
+    suppliesEN: form.suppliesEN?.trim() || null,
+    suppliesAZ: form.suppliesAZ?.trim() || null,
+    suppliesRU: form.suppliesRU?.trim() || null,
     isActive: form.isActive,
     order: form.order,
   };
 }
 
 const descKey = (l: LangKey) => `desc${l}` as keyof CreatePartnerInput;
+const categoryKey = (l: LangKey) => `category${l}` as keyof CreatePartnerInput;
+const suppliesKey = (l: LangKey) => `supplies${l}` as keyof CreatePartnerInput;
 
 function hostnameOf(url: string): string {
   try {
@@ -415,7 +435,31 @@ export default function PartnersClient({ t }: { t: Dict }) {
                     value={(form[descKey(l)] as string) ?? ""}
                     onChange={(e) => setForm((prev) => ({ ...prev, [descKey(l)]: e.target.value }))}
                     disabled={busy}
-                    placeholder={`Partner description in ${l}…`}
+                    placeholder={`What the company does (${l})…`}
+                  />
+                  <label htmlFor={`p-cat-${l}`} className="pf-label" style={{ marginTop: 10 }}>
+                    Category {l}
+                  </label>
+                  <Input
+                    id={`p-cat-${l}`}
+                    className="pf-input"
+                    value={(form[categoryKey(l)] as string) ?? ""}
+                    onChange={(e) => setForm((prev) => ({ ...prev, [categoryKey(l)]: e.target.value }))}
+                    disabled={busy}
+                    maxLength={80}
+                    placeholder={`e.g. Equipment, Energy, Software (${l})`}
+                  />
+                  <label htmlFor={`p-sup-${l}`} className="pf-label" style={{ marginTop: 10 }}>
+                    Supplies to CyberSpace {l}
+                  </label>
+                  <textarea
+                    id={`p-sup-${l}`}
+                    rows={3}
+                    className="pf-textarea"
+                    value={(form[suppliesKey(l)] as string) ?? ""}
+                    onChange={(e) => setForm((prev) => ({ ...prev, [suppliesKey(l)]: e.target.value }))}
+                    disabled={busy}
+                    placeholder={`What this partner supplies to CyberSpace (${l})…`}
                   />
                 </div>
               ))}
