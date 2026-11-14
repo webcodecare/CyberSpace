@@ -18,6 +18,7 @@ import {
   Menu,
   X,
   Briefcase,
+  FileText,
 } from "lucide-react";
 import type { Dict } from "@/lib/i18n";
 import type { JwtUser } from "@/lib/server-auth";
@@ -57,7 +58,8 @@ export default function AdminSidebar({ lang, t, user }: Props) {
       icon: <Handshake size={17} />,
     },
     { href: `${base}/news`, label: t.dash.news ?? "News", icon: <Newspaper size={17} /> },
-    { href: `${base}/careers`, label: t.dash.careers ?? "Careers", icon: <Briefcase size={17} /> },
+    { href: `${base}/jobs`, label: "Jobs", icon: <Briefcase size={17} /> },
+    { href: `${base}/applications`, label: "Applications", icon: <FileText size={17} /> },
     { href: `${base}/settings`, label: t.dash.settings, icon: <Settings size={17} /> },
     { href: `${base}/change-password`, label: t.dash.changePassword, icon: <Lock size={17} /> },
   ];

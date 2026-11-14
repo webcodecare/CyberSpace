@@ -21,3 +21,7 @@ export function formatDay(iso: string, lang: Locale) {
     new Date(iso),
   );
 }
+
+export function stripTags(html: string) {
+  return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
