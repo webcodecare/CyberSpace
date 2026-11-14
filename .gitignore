@@ -4,3 +4,6 @@ out
 next-env.d.ts
 *.tsbuildinfo
 .claude/worktrees
+
+.env.development.local
+.env.production.local

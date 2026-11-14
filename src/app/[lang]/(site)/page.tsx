@@ -8,7 +8,7 @@ import { getDict, isLocale } from "@/lib/i18n";
 import { pageMeta } from "@/lib/seo";
 import { CACHE_TAGS, serverGet } from "@/lib/server-api";
 import { FadeDown, FadeLeft, FadeRight, FadeUp, ZoomIn } from "@/components/Motion";
-import PartnerCard from "@/components/PartnerCard";
+import PartnersCarousel from "@/components/PartnersCarousel";
 import heroSvg from "@/assets/animated-ai-hero.svg";
 
 type DbCategory = {
@@ -380,6 +380,12 @@ type HomePartner = {
   descEN: string | null;
   descAZ: string | null;
   descRU: string | null;
+  categoryAZ: string | null;
+  categoryEN: string | null;
+  categoryRU: string | null;
+  suppliesAZ: string | null;
+  suppliesEN: string | null;
+  suppliesRU: string | null;
 };
 type HomeNews = {
   id: number;
@@ -759,13 +765,9 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
                 {t.common.viewAll} →
               </Link>
             </FadeUp>
-            <div className="partner-grid">
-              {partners.map((p, i) => (
-                <FadeUp key={p.id} delay={(i % 5) * 0.05}>
-                  <PartnerCard partner={p} />
-                </FadeUp>
-              ))}
-            </div>
+            <FadeUp>
+              <PartnersCarousel partners={partners} lang={lang} />
+            </FadeUp>
           </div>
         </section>
       )}

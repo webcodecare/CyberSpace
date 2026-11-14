@@ -9,6 +9,12 @@ export interface Partner {
   descAZ: string | null;
   descEN: string | null;
   descRU: string | null;
+  categoryAZ: string | null;
+  categoryEN: string | null;
+  categoryRU: string | null;
+  suppliesAZ: string | null;
+  suppliesEN: string | null;
+  suppliesRU: string | null;
   isActive: boolean;
   order: number;
   createdAt: string;
