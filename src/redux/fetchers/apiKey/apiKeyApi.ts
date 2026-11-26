@@ -117,6 +117,10 @@ export const apiKeyApi = baseApi.injectEndpoints({
       invalidatesTags: [tagTypes.apiKey],
       transformResponse: (res: { data: ApiKeyRow }) => res.data,
     }),
+    deleteApiKey: builder.mutation<void, number>({
+      query: (id) => ({ url: `/admin/api-keys/${id}`, method: "DELETE" }),
+      invalidatesTags: [tagTypes.apiKey],
+    }),
     getApiLogs: builder.query<ApiLogsResult, ApiLogsQuery>({
       query: (params) => ({ url: "/admin/api-keys/logs", params }),
       providesTags: [tagTypes.apiKey],
@@ -135,6 +139,7 @@ export const {
   useLazyRevealApiKeyQuery,
   useUpdateApiKeyMutation,
   useRevokeApiKeyMutation,
+  useDeleteApiKeyMutation,
   useGetApiLogsQuery,
 } = apiKeyApi;
 

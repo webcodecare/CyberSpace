@@ -3,7 +3,7 @@ import { proxy } from "@/lib/proxy";
 
 /**
  * Admin-only pass-through to the backend `/api-keys` management API (list, create, update,
- * revoke, logs, meta). The browser never sees or sends anything but the httpOnly session cookie;
+ * revoke, delete, logs, meta). The browser never sees or sends anything but the httpOnly session cookie;
  * the backend re-checks that the JWT belongs to an active ADMIN.
  */
 const SEGMENT = /^[A-Za-z0-9_-]+$/;
@@ -19,3 +19,4 @@ async function forward(req: NextRequest, ctx: { params: Promise<{ path?: string[
 export const GET = forward;
 export const POST = forward;
 export const PATCH = forward;
+export const DELETE = forward;

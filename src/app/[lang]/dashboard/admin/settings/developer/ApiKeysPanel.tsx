@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { AlertTriangle, Copy, KeyRound, Pencil, Plus, ShieldOff } from "lucide-react";
+import { AlertTriangle, Copy, KeyRound, Pencil, Plus, ShieldOff, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -19,6 +19,7 @@ import { toast } from "@/lib/toast";
 import {
   apiErrorMessage,
   useCreateApiKeyMutation,
+  useDeleteApiKeyMutation,
   useGetApiKeysQuery,
   useGetApiMetaQuery,
   useLazyRevealApiKeyQuery,
@@ -336,6 +337,8 @@ export default function ApiKeysPanel() {
   const [editing, setEditing] = useState<ApiKeyRow | null>(null);
   const [toRevoke, setToRevoke] = useState<ApiKeyRow | null>(null);
   const [revealKey] = useLazyRevealApiKeyQuery();
+  const [deleteKey, { isLoading: deleting }] = useDeleteApiKeyMutation();
+  const [toDelete, setToDelete] = useState<ApiKeyRow | null>(null);
 
   const defs = meta?.permissions ?? [];
 
@@ -355,6 +358,17 @@ export default function ApiKeysPanel() {
       await revokeKey(toRevoke.id).unwrap();
       toast.success("API key revoked", "It stopped working immediately.");
       setToRevoke(null);
+    } catch (err) {
+      toast.error(apiErrorMessage(err));
+    }
+  }
+
+  async function confirmDelete() {
+    if (!toDelete) return;
+    try {
+      await deleteKey(toDelete.id).unwrap();
+      toast.success("API key deleted", toDelete.name);
+      setToDelete(null);
     } catch (err) {
       toast.error(apiErrorMessage(err));
     }
@@ -451,31 +465,42 @@ export default function ApiKeysPanel() {
                   </td>
                   <td>{k.requests24h}</td>
                   <td>
-                    {k.status !== "REVOKED" && (
-                      <div className="dev-actions">
-                        <button
-                          type="button"
-                          className="dev-icon-btn"
-                          title="Edit"
-                          aria-label={`Edit ${k.name}`}
-                          onClick={() => {
-                            setEditing(k);
-                            setDialogOpen(true);
-                          }}
-                        >
-                          <Pencil size={15} />
-                        </button>
-                        <button
-                          type="button"
-                          className="dev-icon-btn dev-icon-btn--danger"
-                          title="Revoke"
-                          aria-label={`Revoke ${k.name}`}
-                          onClick={() => setToRevoke(k)}
-                        >
-                          <ShieldOff size={15} />
-                        </button>
-                      </div>
-                    )}
+                    <div className="dev-actions">
+                      {k.status !== "REVOKED" && (
+                        <>
+                          <button
+                            type="button"
+                            className="dev-icon-btn"
+                            title="Edit"
+                            aria-label={`Edit ${k.name}`}
+                            onClick={() => {
+                              setEditing(k);
+                              setDialogOpen(true);
+                            }}
+                          >
+                            <Pencil size={15} />
+                          </button>
+                          <button
+                            type="button"
+                            className="dev-icon-btn dev-icon-btn--danger"
+                            title="Revoke"
+                            aria-label={`Revoke ${k.name}`}
+                            onClick={() => setToRevoke(k)}
+                          >
+                            <ShieldOff size={15} />
+                          </button>
+                        </>
+                      )}
+                      <button
+                        type="button"
+                        className="dev-icon-btn dev-icon-btn--danger"
+                        title="Delete"
+                        aria-label={`Delete ${k.name}`}
+                        onClick={() => setToDelete(k)}
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -494,6 +519,16 @@ export default function ApiKeysPanel() {
         confirmText="Revoke key"
         loading={revoking}
         onConfirm={confirmRevoke}
+      />
+
+      <ConfirmDialog
+        open={!!toDelete}
+        onOpenChange={(v) => !v && setToDelete(null)}
+        title={`Delete “${toDelete?.name ?? ""}”?`}
+        description="The key is permanently removed and any application using it will immediately receive 401 errors. This cannot be undone. Its request logs are kept, but no longer show the key name."
+        confirmText="Delete key"
+        loading={deleting}
+        onConfirm={confirmDelete}
       />
     </div>
   );
