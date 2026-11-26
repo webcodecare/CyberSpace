@@ -93,7 +93,7 @@ export default function ApiLogsPanel() {
                 {data.items.map((l) => (
                   <tr key={l.id}>
                     <td className="dev-nowrap">{fmtDate(l.createdAt)}</td>
-                    <td>{l.keyName ?? <span className="dev-sub">unknown key</span>}</td>
+                    <td>{l.keyName ?? <span className="dev-sub">unknown or deleted key</span>}</td>
                     <td>
                       <span className={`dev-method dev-method--${l.method.toLowerCase()}`}>{l.method}</span>{" "}
                       <code className="dash-code">{l.path.replace(/^\/api\/v1/, "")}</code>
